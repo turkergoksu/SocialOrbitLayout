@@ -1,0 +1,3 @@
+include ':socialorbitlayout'
+include ':app'
+rootProject.name = "SocialOrbitLayout"
