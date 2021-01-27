@@ -24,8 +24,8 @@ class SocialOrbitLayout @JvmOverloads constructor(
     private var orbitPadding = 100f
 
     private var animator: ValueAnimator? = null
-    private var animationDuration = 10000
-    private var currentAngle = 0
+    private var animationDuration = 50000
+    private var currentAngle = 0f
 
     init {
         // TODO: 26-Jan-21  https://stackoverflow.com/a/13056400/6771753
@@ -101,13 +101,14 @@ class SocialOrbitLayout @JvmOverloads constructor(
 
     private fun startAnimation() {
         animator?.cancel()
+        // To get more smooth animation on longer duration I switched from Int to Float.
         animator =
-            ValueAnimator.ofInt(0, 360).apply {
+            ValueAnimator.ofFloat(0f, 360f).apply {
                 duration = animationDuration.toLong()
                 interpolator = LinearInterpolator()
                 repeatCount = ValueAnimator.INFINITE
                 addUpdateListener { valueAnimator ->
-                    currentAngle = valueAnimator.animatedValue as Int
+                    currentAngle = valueAnimator.animatedValue as Float
                     invalidate()
                 }
             }
