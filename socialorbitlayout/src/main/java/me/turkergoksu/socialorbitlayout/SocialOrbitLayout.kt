@@ -1,11 +1,12 @@
 package me.turkergoksu.socialorbitlayout
 
+import android.animation.ValueAnimator
 import android.content.Context
 import android.graphics.*
 import android.util.AttributeSet
 import android.view.ViewGroup
+import android.view.animation.LinearInterpolator
 import android.widget.FrameLayout
-import androidx.core.view.children
 import kotlin.math.cos
 import kotlin.math.min
 import kotlin.math.sin
@@ -21,6 +22,10 @@ class SocialOrbitLayout @JvmOverloads constructor(
     private var paint = Paint()
 
     private var orbitPadding = 100f
+
+    private var animator: ValueAnimator? = null
+    private var animationDuration = 10000
+    private var currentAngle = 0
 
     init {
         // TODO: 26-Jan-21  https://stackoverflow.com/a/13056400/6771753
@@ -45,31 +50,7 @@ class SocialOrbitLayout @JvmOverloads constructor(
             fov.elevation = 10f
             addView(fov)
         }
-    }
-
-    override fun onLayout(changed: Boolean, left: Int, top: Int, right: Int, bottom: Int) {
-        super.onLayout(changed, left, top, right, bottom)
-
-        val centerX = (width / 2).toFloat()
-        val centerY = (height / 2).toFloat()
-        val orbitRadius = centerX.coerceAtMost(centerY)
-        for (i in 0 until childCount) {
-            val child = getChildAt(i)
-            val childRadius = min(child.width, child.height) / 2f
-
-            val angle = when (i) {
-                0 -> 70.0
-                1 -> 160.0
-                2 -> 250.0
-                3 -> 340.0
-                else -> 0.0
-            }
-
-            child.x =
-                (centerX - childRadius) - (orbitRadius - orbitPadding) * sin(Math.toRadians(angle)).toFloat()
-            child.y =
-                (centerY - childRadius) + (orbitRadius - orbitPadding) * cos(Math.toRadians(angle)).toFloat()
-        }
+        startAnimation()
     }
 
     override fun onSizeChanged(w: Int, h: Int, oldw: Int, oldh: Int) {
@@ -97,5 +78,39 @@ class SocialOrbitLayout @JvmOverloads constructor(
             radius - orbitPadding,
             paint
         )
+
+        val orbitRadius = centerX.coerceAtMost(centerY)
+        for (i in 0 until childCount) {
+            val child = getChildAt(i)
+            val childRadius = min(child.width, child.height) / 2f
+
+            val angle = when (i) {
+                0 -> 70.0
+                1 -> 160.0
+                2 -> 250.0
+                3 -> 340.0
+                else -> 0.0
+            }
+
+            child.x =
+                (centerX - childRadius) - (orbitRadius - orbitPadding) * sin(Math.toRadians(angle + currentAngle)).toFloat()
+            child.y =
+                (centerY - childRadius) + (orbitRadius - orbitPadding) * cos(Math.toRadians(angle + currentAngle)).toFloat()
+        }
+    }
+
+    private fun startAnimation() {
+        animator?.cancel()
+        animator =
+            ValueAnimator.ofInt(0, 360).apply {
+                duration = animationDuration.toLong()
+                interpolator = LinearInterpolator()
+                repeatCount = ValueAnimator.INFINITE
+                addUpdateListener { valueAnimator ->
+                    currentAngle = valueAnimator.animatedValue as Int
+                    invalidate()
+                }
+            }
+        animator?.start()
     }
 }
