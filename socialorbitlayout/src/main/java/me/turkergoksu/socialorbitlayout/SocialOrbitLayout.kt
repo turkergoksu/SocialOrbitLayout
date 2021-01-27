@@ -23,11 +23,14 @@ class SocialOrbitLayout @JvmOverloads constructor(
     private var outerOrbitPadding = 100f
 
     private var innerOrbitPaint = Paint()
+    private var innerOrbitPaintStrokeWidth = 120f
     private var innerRadius = 0f
 
-    private var animator: ValueAnimator? = null
-    private var animationDuration = 50000
-    private var currentAngle = 0f
+    private var outerOrbitAnimationDuration = 60000
+    private var outerOrbitCurrentAngle = 0f
+
+    private var innerOrbitAnimationDuration = 30000
+    private var innerOrbitCurrentAngle = 0f
 
     init {
         // TODO: 26-Jan-21  https://stackoverflow.com/a/13056400/6771753
@@ -40,10 +43,10 @@ class SocialOrbitLayout @JvmOverloads constructor(
 
         innerOrbitPaint.style = Paint.Style.STROKE
         innerOrbitPaint.color = Color.parseColor("#f8f4fe")
-        innerOrbitPaint.strokeWidth = 150f
+        innerOrbitPaint.strokeWidth = innerOrbitPaintStrokeWidth
 
         // FIXME: 27-Jan-21 temporary
-        for (i in 0..6) {
+        for (i in 0..7) {
             val fov = FloatingObjectView(context)
             fov.setFloatingObject(
                 FloatingObject(
@@ -110,16 +113,16 @@ class SocialOrbitLayout @JvmOverloads constructor(
                 child.x =
                     (centerX - childRadius) - (orbitRadius - outerOrbitPadding) * sin(
                         Math.toRadians(
-                            angle + currentAngle
+                            angle + outerOrbitCurrentAngle
                         )
                     ).toFloat()
                 child.y =
                     (centerY - childRadius) + (orbitRadius - outerOrbitPadding) * cos(
                         Math.toRadians(
-                            angle + currentAngle
+                            angle + outerOrbitCurrentAngle
                         )
                     ).toFloat()
-            } else {
+            } else if (i < 7) {
                 val angle = when (i) {
                     4 -> 20.0
                     5 -> 140.0
@@ -128,35 +131,57 @@ class SocialOrbitLayout @JvmOverloads constructor(
                 }
 
                 child.x =
-                    (centerX - childRadius) - (innerRadius - outerOrbitPadding) * sin(
+                    (centerX - childRadius) - (innerRadius - innerOrbitPaintStrokeWidth / 2) * sin(
                         Math.toRadians(
-                            angle + currentAngle
+                            angle + innerOrbitCurrentAngle
                         )
                     ).toFloat()
                 child.y =
-                    (centerY - childRadius) + (innerRadius - outerOrbitPadding) * cos(
+                    (centerY - childRadius) + (innerRadius - innerOrbitPaintStrokeWidth / 2) * cos(
                         Math.toRadians(
-                            angle + currentAngle
+                            angle + innerOrbitCurrentAngle
                         )
                     ).toFloat()
+            } else {
+                child.x = centerX - childRadius
+                child.y = centerY - childRadius
             }
-
         }
     }
 
     private fun startAnimation() {
-        animator?.cancel()
-        // To get more smooth animation on longer duration I switched from Int to Float.
-        animator =
-            ValueAnimator.ofFloat(0f, 360f).apply {
-                duration = animationDuration.toLong()
-                interpolator = LinearInterpolator()
-                repeatCount = ValueAnimator.INFINITE
-                addUpdateListener { valueAnimator ->
-                    currentAngle = valueAnimator.animatedValue as Float
-                    invalidate()
-                }
+        startOuterOrbitAnimation()
+        startInnerOrbitAnimation()
+    }
+
+    private fun startOuterOrbitAnimation() {
+        val outerOrbitAnimator = createAngleValueAnimator(outerOrbitAnimationDuration)
+        outerOrbitAnimator.let {
+            it.addUpdateListener { valueAnimator ->
+                outerOrbitCurrentAngle = valueAnimator.animatedValue as Float
+                invalidate()
             }
-        animator?.start()
+        }
+        outerOrbitAnimator.start()
+    }
+
+    private fun startInnerOrbitAnimation() {
+        val innerOrbitAnimator = createAngleValueAnimator(innerOrbitAnimationDuration)
+        innerOrbitAnimator.let {
+            it.addUpdateListener { valueAnimator ->
+                innerOrbitCurrentAngle = valueAnimator.animatedValue as Float
+                invalidate()
+            }
+        }
+        innerOrbitAnimator.start()
+    }
+
+    private fun createAngleValueAnimator(animationDuration: Int): ValueAnimator {
+        // To get more smooth animation on longer duration I switched from Int to Float.
+        return ValueAnimator.ofFloat(0f, 360f).apply {
+            duration = animationDuration.toLong()
+            interpolator = LinearInterpolator()
+            repeatCount = ValueAnimator.INFINITE
+        }
     }
 }
