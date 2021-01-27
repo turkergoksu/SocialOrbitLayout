@@ -18,10 +18,12 @@ class SocialOrbitLayout @JvmOverloads constructor(
     context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
 ) : FrameLayout(context, attrs, defStyleAttr) {
 
-    private var rectF: RectF? = null
-    private var paint = Paint()
+    private var outerOrbitRectF: RectF? = null
+    private var outerOrbitPaint = Paint()
+    private var outerOrbitPadding = 100f
 
-    private var orbitPadding = 100f
+    private var innerOrbitPaint = Paint()
+    private var innerRadius = 0f
 
     private var animator: ValueAnimator? = null
     private var animationDuration = 50000
@@ -32,12 +34,16 @@ class SocialOrbitLayout @JvmOverloads constructor(
         setWillNotDraw(false)
 
         // FIXME: 25-Jan-21 temp
-        paint.style = Paint.Style.STROKE
-        paint.color = Color.LTGRAY
-        paint.strokeWidth = 5f
+        outerOrbitPaint.style = Paint.Style.STROKE
+        outerOrbitPaint.color = Color.LTGRAY
+        outerOrbitPaint.strokeWidth = 5f
+
+        innerOrbitPaint.style = Paint.Style.STROKE
+        innerOrbitPaint.color = Color.parseColor("#f8f4fe")
+        innerOrbitPaint.strokeWidth = 150f
 
         // FIXME: 27-Jan-21 temporary
-        for (i in 0..3) {
+        for (i in 0..6) {
             val fov = FloatingObjectView(context)
             fov.setFloatingObject(
                 FloatingObject(
@@ -56,7 +62,7 @@ class SocialOrbitLayout @JvmOverloads constructor(
     override fun onSizeChanged(w: Int, h: Int, oldw: Int, oldh: Int) {
         super.onSizeChanged(w, h, oldw, oldh)
 
-        rectF = RectF(
+        outerOrbitRectF = RectF(
             0f,
             0f,
             width.coerceAtMost(height).toFloat(),
@@ -73,10 +79,18 @@ class SocialOrbitLayout @JvmOverloads constructor(
         val radius = centerX.coerceAtMost(centerY)
 
         canvas?.drawCircle(
-            rectF!!.centerX(),
-            rectF!!.centerY(),
-            radius - orbitPadding,
-            paint
+            outerOrbitRectF!!.centerX(),
+            outerOrbitRectF!!.centerY(),
+            radius - outerOrbitPadding,
+            outerOrbitPaint
+        )
+
+        innerRadius = radius - outerOrbitPadding - 200
+        canvas?.drawCircle(
+            outerOrbitRectF!!.centerX(),
+            outerOrbitRectF!!.centerY(),
+            innerRadius,
+            innerOrbitPaint
         )
 
         val orbitRadius = centerX.coerceAtMost(centerY)
@@ -84,18 +98,49 @@ class SocialOrbitLayout @JvmOverloads constructor(
             val child = getChildAt(i)
             val childRadius = min(child.width, child.height) / 2f
 
-            val angle = when (i) {
-                0 -> 70.0
-                1 -> 160.0
-                2 -> 250.0
-                3 -> 340.0
-                else -> 0.0
+            if (i < 4) {
+                val angle = when (i) {
+                    0 -> 70.0
+                    1 -> 160.0
+                    2 -> 250.0
+                    3 -> 340.0
+                    else -> 0.0
+                }
+
+                child.x =
+                    (centerX - childRadius) - (orbitRadius - outerOrbitPadding) * sin(
+                        Math.toRadians(
+                            angle + currentAngle
+                        )
+                    ).toFloat()
+                child.y =
+                    (centerY - childRadius) + (orbitRadius - outerOrbitPadding) * cos(
+                        Math.toRadians(
+                            angle + currentAngle
+                        )
+                    ).toFloat()
+            } else {
+                val angle = when (i) {
+                    4 -> 20.0
+                    5 -> 140.0
+                    6 -> 260.0
+                    else -> 0.0
+                }
+
+                child.x =
+                    (centerX - childRadius) - (innerRadius - outerOrbitPadding) * sin(
+                        Math.toRadians(
+                            angle + currentAngle
+                        )
+                    ).toFloat()
+                child.y =
+                    (centerY - childRadius) + (innerRadius - outerOrbitPadding) * cos(
+                        Math.toRadians(
+                            angle + currentAngle
+                        )
+                    ).toFloat()
             }
 
-            child.x =
-                (centerX - childRadius) - (orbitRadius - orbitPadding) * sin(Math.toRadians(angle + currentAngle)).toFloat()
-            child.y =
-                (centerY - childRadius) + (orbitRadius - orbitPadding) * cos(Math.toRadians(angle + currentAngle)).toFloat()
         }
     }
 
