@@ -22,7 +22,6 @@ class SocialOrbitLayout @JvmOverloads constructor(
     private var orbit: Orbit? = null
 
     // Drawing
-    private var outerOrbitRectF: RectF? = null
     private var outerOrbitPaint = Paint()
     private var innerOrbitPaint = Paint()
 
@@ -64,17 +63,6 @@ class SocialOrbitLayout @JvmOverloads constructor(
         }
     }
 
-    override fun onSizeChanged(w: Int, h: Int, oldw: Int, oldh: Int) {
-        super.onSizeChanged(w, h, oldw, oldh)
-
-        outerOrbitRectF = RectF(
-            0f,
-            0f,
-            width.coerceAtMost(height).toFloat(),
-            width.coerceAtMost(height).toFloat()
-        )
-    }
-
     override fun onDraw(canvas: Canvas?) {
         super.onDraw(canvas)
 
@@ -84,8 +72,8 @@ class SocialOrbitLayout @JvmOverloads constructor(
         val outerOrbitRadius = centerX.coerceAtMost(centerY)
 
         canvas?.drawCircle(
-            outerOrbitRectF!!.centerX(),
-            outerOrbitRectF!!.centerY(),
+            centerX,
+            centerY,
             outerOrbitRadius - orbit?.outerOrbitPadding!!,
             outerOrbitPaint
         )
@@ -93,8 +81,8 @@ class SocialOrbitLayout @JvmOverloads constructor(
         val innerRadius =
             outerOrbitRadius - orbit?.outerOrbitPadding!! - (orbit?.distanceBetweenOuterAndInner!! + orbit?.innerOrbitWidth!! / 2)
         canvas?.drawCircle(
-            outerOrbitRectF!!.centerX(),
-            outerOrbitRectF!!.centerY(),
+            centerX,
+            centerY,
             innerRadius,
             innerOrbitPaint
         )
