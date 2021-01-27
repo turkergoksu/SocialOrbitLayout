@@ -12,38 +12,27 @@ class FloatingObject(
     var bitmap: Bitmap,
     val borderWidth: Float = 10f,
     val size: Int = 100,
-    val elevation: Float = 10f
+    val elevation: Float = 10f,
 ) {
-    fun convertToCircularBitmap() {
-        val scaledBitmap =
-            Bitmap.createScaledBitmap(
-                bitmap,
-                (size - borderWidth.toInt()),
-                size - borderWidth.toInt(),
-                false
-            )
-        val circularBitmap = getCircularCroppedBitmap(scaledBitmap)
+
+    init {
+        convertToCircularBitmap()
+    }
+
+    private fun convertToCircularBitmap() {
+        val scaledBitmap = getScaledBitmap()
+        val circularBitmap = getCircularBitmap(scaledBitmap)
         bitmap = circularBitmap
     }
 
-    // TODO: 23-Jan-21 You should move this func to BitmapUtil class or smt..
-    private fun getCircularCroppedBitmap(bitmap: Bitmap): Bitmap {
-        // TODO: 23-Jan-21  : https://stackoverflow.com/a/15489830/6771753
-        val width: Int = bitmap.getWidth()
-        val height: Int = bitmap.getHeight()
-        val outputBitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888)
+    private fun getCircularBitmap(scaledBitmap: Bitmap): Bitmap =
+        BitmapUtil.getCircularCroppedBitmap(scaledBitmap)
 
-        val path = Path()
-        path.addCircle(
-            (width / 2).toFloat(),
-            (height / 2).toFloat(),
-            width.coerceAtMost(height / 2).toFloat(),
-            Path.Direction.CCW
+    private fun getScaledBitmap(): Bitmap =
+        Bitmap.createScaledBitmap(
+            bitmap,
+            (size - borderWidth.toInt()),
+            size - borderWidth.toInt(),
+            false
         )
-
-        val canvas = Canvas(outputBitmap)
-        canvas.clipPath(path)
-        canvas.drawBitmap(bitmap, 0f, 0f, null)
-        return outputBitmap
-    }
 }

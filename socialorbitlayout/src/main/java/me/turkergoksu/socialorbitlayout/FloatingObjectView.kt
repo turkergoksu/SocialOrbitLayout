@@ -15,11 +15,12 @@ class FloatingObjectView @JvmOverloads constructor(
     context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
 ) : View(context, attrs, defStyleAttr) {
 
-    private var rectF: RectF? = null
-
+    // Member variables
     private var floatingObject: FloatingObject? = null
 
-    // default value = 100
+    // Drawing
+    private var rectF: RectF? = null
+
     private var floatingObjMeasuredWidth: Int = 100
     private var floatingObjMeasuredHeight: Int = 100
 
@@ -107,10 +108,9 @@ class FloatingObjectView @JvmOverloads constructor(
     }
 
     fun setFloatingObject(floatingObject: FloatingObject) {
-        floatingObject.convertToCircularBitmap()
         this.floatingObject = floatingObject
         init()
-        invalidate() // TODO: 26-Jan-21 I might need to request layout to measure again
+        invalidate()
     }
 
     // TODO: 26-Jan-21 https://stackoverflow.com/a/27497988/6771753
