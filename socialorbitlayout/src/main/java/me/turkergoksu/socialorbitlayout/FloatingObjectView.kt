@@ -93,20 +93,20 @@ class FloatingObjectView @JvmOverloads constructor(
         backgroundPaint.color = floatingObject.backgroundColor
         radius?.let {
             canvas?.drawCircle(
-                x + floatingObject.borderWidth - (x - floatingObject.bitmap.width / 2),
-                y + floatingObject.borderWidth - (y - floatingObject.bitmap.width / 2),
+                floatingObject.borderWidth + floatingObject.bitmap.width / 2,
+                floatingObject.borderWidth + floatingObject.bitmap.width / 2,
                 it,
                 backgroundPaint
             )
-
-            // Draw image
-            canvas?.drawBitmap(
-                floatingObject.bitmap,
-                x - floatingObject.bitmap.width / 2f + floatingObject.borderWidth - (x - floatingObject.bitmap.width / 2),
-                y - floatingObject.bitmap.width / 2f + floatingObject.borderWidth - (y - floatingObject.bitmap.width / 2),
-                Paint()
-            )
         }
+
+        // Draw image
+        canvas?.drawBitmap(
+            floatingObject.bitmap,
+            floatingObject.borderWidth,
+            floatingObject.borderWidth,
+            Paint()
+        )
     }
 
     fun setFloatingObject(floatingObject: FloatingObject) {

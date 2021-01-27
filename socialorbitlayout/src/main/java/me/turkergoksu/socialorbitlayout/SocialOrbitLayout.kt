@@ -16,7 +16,7 @@ class SocialOrbitLayout @JvmOverloads constructor(
     private var rectF: RectF? = null
     private var paint = Paint()
 
-    private var orbitPadding = 10f
+    private var orbitPadding = 50f
 
     init {
         // TODO: 26-Jan-21  https://stackoverflow.com/a/13056400/6771753
