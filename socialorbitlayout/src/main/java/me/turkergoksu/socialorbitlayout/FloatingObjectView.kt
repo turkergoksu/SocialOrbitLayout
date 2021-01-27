@@ -33,13 +33,10 @@ class FloatingObjectView @JvmOverloads constructor(
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
         // TODO: 26-Jan-21 https://stackoverflow.com/a/12267248/6771753
         if (floatingObject != null) {
-//            val desiredWidth = 120 // (50 + 10) + (50 + 10)
-//            val desiredHeight = 120
-
             val desiredWidth =
-                ((floatingObject!!.resolution / 2 + floatingObject!!.borderWidth) * 2).toInt()
+                ((floatingObject!!.size / 2 + floatingObject!!.borderWidth) * 2).toInt()
             val desiredHeight =
-                ((floatingObject!!.resolution / 2 + floatingObject!!.borderWidth) * 2).toInt()
+                ((floatingObject!!.size / 2 + floatingObject!!.borderWidth) * 2).toInt()
 
             val widthMode = MeasureSpec.getMode(widthMeasureSpec)
             val widthSize = MeasureSpec.getSize(widthMeasureSpec)

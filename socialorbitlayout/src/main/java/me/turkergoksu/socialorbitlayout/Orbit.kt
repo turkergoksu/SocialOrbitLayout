@@ -24,4 +24,6 @@ data class Orbit(
     var innerOrbitWidth: Float = 120f
     var innerOrbitAnimationDuration: Int = 30000 // 30 seconds
 
+    var distanceBetweenOuterAndInner: Float = 150f
+
 }
