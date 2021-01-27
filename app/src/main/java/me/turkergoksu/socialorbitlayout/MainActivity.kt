@@ -14,14 +14,48 @@ class MainActivity : AppCompatActivity() {
         val binding =
             DataBindingUtil.setContentView<ActivityMainBinding>(this, R.layout.activity_main)
 
-        val orbit = Orbit(mutableListOf())
-        for (i in 0..7) {
-            val floatingObject = FloatingObject(
-                Color.WHITE,
-                BitmapFactory.decodeResource(resources, R.drawable.dummy1)
-            )
-            orbit.floatingObjects?.add(floatingObject)
-        }
+        val orbit = Orbit(
+            mutableListOf(
+                FloatingObject(
+                    Color.parseColor("#7409ed"),
+                    BitmapFactory.decodeResource(resources, R.drawable.dummy1),
+                    size = 175
+                ),
+                FloatingObject(
+                    Color.WHITE,
+                    BitmapFactory.decodeResource(resources, R.drawable.dummy2),
+                    size = 125
+                ),
+                FloatingObject(
+                    Color.WHITE,
+                    BitmapFactory.decodeResource(resources, R.drawable.dummy3)
+                ),
+                FloatingObject(
+                    Color.WHITE,
+                    BitmapFactory.decodeResource(resources, R.drawable.dummy4),
+                    size = 125
+                ),
+                FloatingObject(
+                    Color.WHITE,
+                    BitmapFactory.decodeResource(resources, R.drawable.dummy8),
+                    size = 150
+                ),
+                FloatingObject(
+                    Color.WHITE,
+                    BitmapFactory.decodeResource(resources, R.drawable.dummy6)
+                ),
+                FloatingObject(
+                    Color.WHITE,
+                    BitmapFactory.decodeResource(resources, R.drawable.dummy7)
+                ),
+                FloatingObject(
+                    Color.WHITE,
+                    BitmapFactory.decodeResource(resources, R.drawable.dummy5)
+                )
+            ),
+            distanceBetweenOuterAndInner = 125f
+        )
+
         binding.socialOrbitLayout.setOrbit(orbit)
     }
 }

@@ -92,12 +92,16 @@ class SocialOrbitLayout @JvmOverloads constructor(
             val child = getChildAt(i)
             val childRadius = min(child.width, child.height) / 2f
 
-            if (i < 4) {
+            if(i == 0) {
+                child.x = centerX - childRadius
+                child.y = centerY - childRadius
+            }
+            else if (i < 5) {
                 val angle = when (i) {
-                    0 -> 70.0
-                    1 -> 160.0
-                    2 -> 250.0
-                    3 -> 340.0
+                    1 -> 70.0
+                    2 -> 160.0
+                    3 -> 250.0
+                    4 -> 340.0
                     else -> 0.0
                 }
 
@@ -113,11 +117,11 @@ class SocialOrbitLayout @JvmOverloads constructor(
                             angle + outerOrbitCurrentAngle
                         )
                     ).toFloat()
-            } else if (i < 7) {
+            } else {
                 val angle = when (i) {
-                    4 -> 20.0
-                    5 -> 140.0
-                    6 -> 260.0
+                    5 -> 20.0
+                    6 -> 140.0
+                    7 -> 260.0
                     else -> 0.0
                 }
 
@@ -133,9 +137,6 @@ class SocialOrbitLayout @JvmOverloads constructor(
                             angle + innerOrbitCurrentAngle
                         )
                     ).toFloat()
-            } else {
-                child.x = centerX - childRadius
-                child.y = centerY - childRadius
             }
         }
     }
