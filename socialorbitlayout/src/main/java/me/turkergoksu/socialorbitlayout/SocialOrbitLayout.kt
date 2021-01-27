@@ -5,6 +5,10 @@ import android.graphics.*
 import android.util.AttributeSet
 import android.view.ViewGroup
 import android.widget.FrameLayout
+import androidx.core.view.children
+import kotlin.math.cos
+import kotlin.math.min
+import kotlin.math.sin
 
 /**
  * Created by turkergoksu on 26-Jan-21.
@@ -16,7 +20,7 @@ class SocialOrbitLayout @JvmOverloads constructor(
     private var rectF: RectF? = null
     private var paint = Paint()
 
-    private var orbitPadding = 50f
+    private var orbitPadding = 100f
 
     init {
         // TODO: 26-Jan-21  https://stackoverflow.com/a/13056400/6771753
@@ -27,28 +31,45 @@ class SocialOrbitLayout @JvmOverloads constructor(
         paint.color = Color.LTGRAY
         paint.strokeWidth = 5f
 
-        // FIXME: 26-Jan-21 temporary
-//        val tv = TextView(context)
-//        tv.setText("seseses")
-//        tv.setTextSize(24f)
-//        tv.layoutParams =
-//            LayoutParams(LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT)
-//        tv.x = 200f
-//        tv.y = 200f
-//        addView(tv)
-
-        val fov = FloatingObjectView(context)
-        fov.setFloatingObject(
-            FloatingObject(
-                Color.RED,
-                BitmapFactory.decodeResource(resources, R.drawable.dummy)
+        // FIXME: 27-Jan-21 temporary
+        for (i in 0..3) {
+            val fov = FloatingObjectView(context)
+            fov.setFloatingObject(
+                FloatingObject(
+                    Color.WHITE,
+                    BitmapFactory.decodeResource(resources, R.drawable.dummy)
+                )
             )
-        )
-        fov.layoutParams = LayoutParams(LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT)
-        fov.x = 200f
-        fov.y = 200f
-        fov.z = 50f
-        addView(fov)
+            fov.layoutParams =
+                LayoutParams(LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT)
+            fov.elevation = 10f
+            addView(fov)
+        }
+    }
+
+    override fun onLayout(changed: Boolean, left: Int, top: Int, right: Int, bottom: Int) {
+        super.onLayout(changed, left, top, right, bottom)
+
+        val centerX = (width / 2).toFloat()
+        val centerY = (height / 2).toFloat()
+        val orbitRadius = centerX.coerceAtMost(centerY)
+        for (i in 0 until childCount) {
+            val child = getChildAt(i)
+            val childRadius = min(child.width, child.height) / 2f
+
+            val angle = when (i) {
+                0 -> 70.0
+                1 -> 160.0
+                2 -> 250.0
+                3 -> 340.0
+                else -> 0.0
+            }
+
+            child.x =
+                (centerX - childRadius) - (orbitRadius - orbitPadding) * sin(Math.toRadians(angle)).toFloat()
+            child.y =
+                (centerY - childRadius) + (orbitRadius - orbitPadding) * cos(Math.toRadians(angle)).toFloat()
+        }
     }
 
     override fun onSizeChanged(w: Int, h: Int, oldw: Int, oldh: Int) {
