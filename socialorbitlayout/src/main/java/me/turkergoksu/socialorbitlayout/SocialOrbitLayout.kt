@@ -16,6 +16,8 @@ class SocialOrbitLayout @JvmOverloads constructor(
     private var rectF: RectF? = null
     private var paint = Paint()
 
+    private var orbitPadding = 10f
+
     init {
         // TODO: 26-Jan-21  https://stackoverflow.com/a/13056400/6771753
         setWillNotDraw(false)
@@ -25,8 +27,7 @@ class SocialOrbitLayout @JvmOverloads constructor(
         paint.color = Color.LTGRAY
         paint.strokeWidth = 5f
 
-        // TODO: 26-Jan-21 canvas?.enableZ shadow problemini cozebilir.
-
+        // FIXME: 26-Jan-21 temporary
 //        val tv = TextView(context)
 //        tv.setText("seseses")
 //        tv.setTextSize(24f)
@@ -64,7 +65,7 @@ class SocialOrbitLayout @JvmOverloads constructor(
     override fun onDraw(canvas: Canvas?) {
         super.onDraw(canvas)
 
-        // If this code block doesnt work try in dispatchDraw
+        // If this code block doesn't work try in dispatchDraw
         val centerX = (measuredWidth / 2).toFloat()
         val centerY = (measuredHeight / 2).toFloat()
         val radius = centerX.coerceAtMost(centerY)
@@ -72,11 +73,8 @@ class SocialOrbitLayout @JvmOverloads constructor(
         canvas?.drawCircle(
             rectF!!.centerX(),
             rectF!!.centerY(),
-            radius,
+            radius - orbitPadding,
             paint
         )
-
-        // FIXME: 26-Jan-21 temp
-//        canvas?.drawRect(rectF!!, Paint())
     }
 }

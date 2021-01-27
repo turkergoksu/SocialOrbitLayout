@@ -9,10 +9,12 @@ import android.graphics.Path
  */
 class FloatingObject(
     val backgroundColor: Int,
-    var bitmap: Bitmap
+    var bitmap: Bitmap,
+    val borderWidth: Float = 10f,
+    val resolution: Int = 100 // FIXME: 26-Jan-21 put a proper variable name
 ) {
     fun convertToCircularBitmap() {
-        val scaledBitmap = Bitmap.createScaledBitmap(bitmap, 100, 100, false)
+        val scaledBitmap = Bitmap.createScaledBitmap(bitmap, resolution, resolution, false)
         val circularBitmap = getCircularCroppedBitmap(scaledBitmap)
         bitmap = circularBitmap
     }

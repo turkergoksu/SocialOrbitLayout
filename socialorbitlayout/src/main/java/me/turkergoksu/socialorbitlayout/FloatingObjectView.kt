@@ -16,49 +16,53 @@ class FloatingObjectView @JvmOverloads constructor(
 ) : View(context, attrs, defStyleAttr) {
 
     private var rectF: RectF? = null
-    private var floatingObjectBorderWith = 10f // FIXME: 25-Jan-21 maybe add to FloatingObject.kt
 
     private var floatingObject: FloatingObject? = null
 
-    var myW = 0
-    var myH = 0
+    // default value = 100
+    private var floatingObjMeasuredWidth: Int = 100
+    private var floatingObjMeasuredHeight: Int = 100
+
+    private var radius: Float? = null
+
+    private fun init() {
+        // Set radius
+        floatingObject?.let { radius = it.bitmap.width / 2f + it.borderWidth }
+    }
 
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
         // TODO: 26-Jan-21 https://stackoverflow.com/a/12267248/6771753
-        val desiredWidth = 120 // (50 + 10) + (50 + 10)
-        val desiredHeight = 120
+        if (floatingObject != null) {
+//            val desiredWidth = 120 // (50 + 10) + (50 + 10)
+//            val desiredHeight = 120
 
-        val widthMode = MeasureSpec.getMode(widthMeasureSpec)
-        val widthSize = MeasureSpec.getSize(widthMeasureSpec)
-        val heightMode = MeasureSpec.getMode(heightMeasureSpec)
-        val heightSize = MeasureSpec.getSize(heightMeasureSpec)
+            val desiredWidth =
+                ((floatingObject!!.resolution / 2 + floatingObject!!.borderWidth) * 2).toInt()
+            val desiredHeight =
+                ((floatingObject!!.resolution / 2 + floatingObject!!.borderWidth) * 2).toInt()
 
-        //Measure Width
-        myW = if (widthMode == MeasureSpec.EXACTLY) {
-            //Must be this size
-            widthSize
-        } else if (widthMode == MeasureSpec.AT_MOST) {
-            //Can't be bigger than...
-            min(desiredWidth, widthSize)
-        } else {
-            //Be whatever you want
-            desiredWidth
+            val widthMode = MeasureSpec.getMode(widthMeasureSpec)
+            val widthSize = MeasureSpec.getSize(widthMeasureSpec)
+            val heightMode = MeasureSpec.getMode(heightMeasureSpec)
+            val heightSize = MeasureSpec.getSize(heightMeasureSpec)
+
+            //Measure Width
+            floatingObjMeasuredWidth = when (widthMode) {
+                MeasureSpec.EXACTLY -> widthSize
+                MeasureSpec.AT_MOST -> min(desiredWidth, widthSize)
+                else -> desiredWidth
+            }
+
+            //Measure Height
+            floatingObjMeasuredHeight = when (heightMode) {
+                MeasureSpec.EXACTLY -> heightSize
+                MeasureSpec.AT_MOST -> min(desiredHeight, heightSize)
+                else -> desiredHeight
+            }
+
+            //MUST CALL THIS
+            setMeasuredDimension(floatingObjMeasuredWidth, floatingObjMeasuredHeight)
         }
-
-        //Measure Height
-        myH = if (heightMode == MeasureSpec.EXACTLY) {
-            //Must be this size
-            heightSize
-        } else if (heightMode == MeasureSpec.AT_MOST) {
-            //Can't be bigger than...
-            min(desiredHeight, heightSize)
-        } else {
-            //Be whatever you want
-            desiredHeight
-        }
-
-        //MUST CALL THIS
-        setMeasuredDimension(myW, myH)
     }
 
     override fun onSizeChanged(w: Int, h: Int, oldw: Int, oldh: Int) {
@@ -67,11 +71,12 @@ class FloatingObjectView @JvmOverloads constructor(
         rectF = RectF(
             0f,
             0f,
-            myW.coerceAtMost(myH).toFloat(),
-            myW.coerceAtMost(myH).toFloat()
+            floatingObjMeasuredWidth.coerceAtMost(floatingObjMeasuredHeight).toFloat(),
+            floatingObjMeasuredWidth.coerceAtMost(floatingObjMeasuredHeight).toFloat()
         )
 
-        outlineProvider = FloatingObjectOutline(rectF!!.toRect(), 60f)
+        // Assigning custom outline to enable z axis which is needed for shadow effect
+        outlineProvider = radius?.let { FloatingObjectOutline(rectF!!.toRect(), it) }
     }
 
     override fun onDraw(canvas: Canvas?) {
@@ -86,26 +91,29 @@ class FloatingObjectView @JvmOverloads constructor(
     ) {
         val backgroundPaint = Paint()
         backgroundPaint.color = floatingObject.backgroundColor
-        canvas?.drawCircle(
-            x + floatingObjectBorderWith - 150,
-            y + floatingObjectBorderWith - 150,
-            floatingObject.bitmap.width / 2f + floatingObjectBorderWith,
-            backgroundPaint
-        )
+        radius?.let {
+            canvas?.drawCircle(
+                x + floatingObject.borderWidth - (x - floatingObject.bitmap.width / 2),
+                y + floatingObject.borderWidth - (y - floatingObject.bitmap.width / 2),
+                it,
+                backgroundPaint
+            )
 
-        // Draw image
-        canvas?.drawBitmap(
-            floatingObject.bitmap,
-            x - floatingObject.bitmap.width / 2f + floatingObjectBorderWith - 150,
-            y - floatingObject.bitmap.width / 2f + floatingObjectBorderWith - 150,
-            Paint()
-        )
+            // Draw image
+            canvas?.drawBitmap(
+                floatingObject.bitmap,
+                x - floatingObject.bitmap.width / 2f + floatingObject.borderWidth - (x - floatingObject.bitmap.width / 2),
+                y - floatingObject.bitmap.width / 2f + floatingObject.borderWidth - (y - floatingObject.bitmap.width / 2),
+                Paint()
+            )
+        }
     }
 
     fun setFloatingObject(floatingObject: FloatingObject) {
         floatingObject.convertToCircularBitmap()
         this.floatingObject = floatingObject
-        invalidate()
+        init()
+        invalidate() // TODO: 26-Jan-21 I might need to request layout to measure again
     }
 
     // TODO: 26-Jan-21 https://stackoverflow.com/a/27497988/6771753
