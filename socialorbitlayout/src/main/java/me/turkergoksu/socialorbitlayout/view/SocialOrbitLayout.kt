@@ -47,12 +47,12 @@ class SocialOrbitLayout @JvmOverloads constructor(
         // Outer orbit paint
         outerOrbitPaint.style = Paint.Style.STROKE
         outerOrbitPaint.color = orbit?.outerOrbitColor!!
-        outerOrbitPaint.strokeWidth = orbit?.outerOrbitWidth!!
+        outerOrbitPaint.strokeWidth = orbit?.outerOrbitWidth!!.dpToPx(resources.displayMetrics)
 
         // Inner orbit paint
         innerOrbitPaint.style = Paint.Style.STROKE
         innerOrbitPaint.color = orbit?.innerOrbitColor!!
-        innerOrbitPaint.strokeWidth = orbit?.innerOrbitWidth!!
+        innerOrbitPaint.strokeWidth = orbit?.innerOrbitWidth!!.dpToPx(resources.displayMetrics)
     }
 
     private fun addChildFloatingObjectViews() {
@@ -143,13 +143,17 @@ class SocialOrbitLayout @JvmOverloads constructor(
                 }
 
                 child.x =
-                    (centerX - childRadius) - (innerRadius - orbit?.innerOrbitWidth!! / 2) * sin(
+                    (centerX - childRadius) - (innerRadius - orbit?.innerOrbitWidth!!.dpToPx(
+                        resources.displayMetrics
+                    ) / 2) * sin(
                         Math.toRadians(
                             angle + innerOrbitCurrentAngle
                         )
                     ).toFloat()
                 child.y =
-                    (centerY - childRadius) + (innerRadius - orbit?.innerOrbitWidth!! / 2) * cos(
+                    (centerY - childRadius) + (innerRadius - orbit?.innerOrbitWidth!!.dpToPx(
+                        resources.displayMetrics
+                    ) / 2) * cos(
                         Math.toRadians(
                             angle + innerOrbitCurrentAngle
                         )
