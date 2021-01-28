@@ -3,11 +3,29 @@ package me.turkergoksu.socialorbitlayout
 import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.graphics.Path
+import android.util.DisplayMetrics
 
 /**
  * Created by turkergoksu on 27-Jan-21.
  */
 object BitmapUtil {
+
+    /**
+     * Get scaled bitmap with given size and borderWidth
+     */
+    fun getScaledBitmap(
+        bitmap: Bitmap,
+        size: Float,
+        borderWidth: Float,
+        displayMetrics: DisplayMetrics
+    ): Bitmap =
+        Bitmap.createScaledBitmap(
+            bitmap,
+            (size - borderWidth).dpToPx(displayMetrics).toInt(),
+            (size - borderWidth).dpToPx(displayMetrics).toInt(),
+            false
+        )
+
 
     /**
      * Get circular cropped image for given image.

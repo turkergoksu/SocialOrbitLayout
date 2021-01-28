@@ -1,4 +1,4 @@
-package me.turkergoksu.socialorbitlayout
+package me.turkergoksu.socialorbitlayout.view
 
 import android.content.Context
 import android.graphics.*
@@ -6,6 +6,8 @@ import android.util.AttributeSet
 import android.view.View
 import android.view.ViewOutlineProvider
 import androidx.core.graphics.toRect
+import me.turkergoksu.socialorbitlayout.dpToPx
+import me.turkergoksu.socialorbitlayout.model.FloatingObject
 import kotlin.math.min
 
 /**
@@ -28,16 +30,20 @@ class FloatingObjectView @JvmOverloads constructor(
 
     private fun init() {
         // Set radius
-        floatingObject?.let { radius = it.bitmap.width / 2f + it.borderWidth }
+        floatingObject?.let {
+            radius = (it.bitmap.width / 2f + it.borderWidth.dpToPx(resources.displayMetrics))
+        }
     }
 
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
         // TODO: 26-Jan-21 https://stackoverflow.com/a/12267248/6771753
         if (floatingObject != null) {
             val desiredWidth =
-                ((floatingObject!!.size / 2 + floatingObject!!.borderWidth) * 2).toInt()
+                ((floatingObject!!.size / 2 + floatingObject!!.borderWidth) * 2).dpToPx(resources.displayMetrics)
+                    .toInt()
             val desiredHeight =
-                ((floatingObject!!.size / 2 + floatingObject!!.borderWidth) * 2).toInt()
+                ((floatingObject!!.size / 2 + floatingObject!!.borderWidth) * 2).dpToPx(resources.displayMetrics)
+                    .toInt()
 
             val widthMode = MeasureSpec.getMode(widthMeasureSpec)
             val widthSize = MeasureSpec.getSize(widthMeasureSpec)
@@ -91,8 +97,8 @@ class FloatingObjectView @JvmOverloads constructor(
         backgroundPaint.color = floatingObject.backgroundColor
         radius?.let {
             canvas?.drawCircle(
-                floatingObject.borderWidth + floatingObject.bitmap.width / 2,
-                floatingObject.borderWidth + floatingObject.bitmap.width / 2,
+                (floatingObject.borderWidth.dpToPx(resources.displayMetrics) + floatingObject.bitmap.width / 2),
+                (floatingObject.borderWidth.dpToPx(resources.displayMetrics) + floatingObject.bitmap.width / 2),
                 it,
                 backgroundPaint
             )
@@ -101,8 +107,8 @@ class FloatingObjectView @JvmOverloads constructor(
         // Draw image
         canvas?.drawBitmap(
             floatingObject.bitmap,
-            floatingObject.borderWidth,
-            floatingObject.borderWidth,
+            (radius!! - floatingObject.bitmap.width / 2),
+            (radius!! - floatingObject.bitmap.width / 2),
             Paint()
         )
     }

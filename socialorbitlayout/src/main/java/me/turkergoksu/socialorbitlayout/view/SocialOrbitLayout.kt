@@ -1,4 +1,4 @@
-package me.turkergoksu.socialorbitlayout
+package me.turkergoksu.socialorbitlayout.view
 
 import android.animation.ValueAnimator
 import android.content.Context
@@ -7,6 +7,9 @@ import android.util.AttributeSet
 import android.view.ViewGroup
 import android.view.animation.LinearInterpolator
 import android.widget.FrameLayout
+import me.turkergoksu.socialorbitlayout.BitmapUtil
+import me.turkergoksu.socialorbitlayout.dpToPx
+import me.turkergoksu.socialorbitlayout.model.Orbit
 import kotlin.math.cos
 import kotlin.math.min
 import kotlin.math.sin
@@ -54,7 +57,18 @@ class SocialOrbitLayout @JvmOverloads constructor(
 
     private fun addChildFloatingObjectViews() {
         for (floatingObject in orbit?.floatingObjects!!) {
+            // FIXME: 28-Jan-21 bu for icini düzenle veya fonksiyonlastir
             val view = FloatingObjectView(context)
+
+            floatingObject.bitmap = BitmapUtil.getCircularCroppedBitmap(
+                BitmapUtil.getScaledBitmap(
+                    floatingObject.bitmap,
+                    floatingObject.size,
+                    floatingObject.borderWidth,
+                    resources.displayMetrics
+                )
+            )
+
             view.setFloatingObject(floatingObject)
             view.layoutParams =
                 LayoutParams(LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT)
@@ -74,12 +88,11 @@ class SocialOrbitLayout @JvmOverloads constructor(
         canvas?.drawCircle(
             centerX,
             centerY,
-            outerOrbitRadius - orbit?.outerOrbitPadding!!,
+            outerOrbitRadius - orbit?.outerOrbitPadding!!.dpToPx(resources.displayMetrics),
             outerOrbitPaint
         )
 
-        val innerRadius =
-            outerOrbitRadius - orbit?.outerOrbitPadding!! - (orbit?.distanceBetweenOuterAndInner!! + orbit?.innerOrbitWidth!! / 2)
+        val innerRadius = orbit!!.innerRadius.dpToPx(resources.displayMetrics)
         canvas?.drawCircle(
             centerX,
             centerY,
@@ -87,16 +100,16 @@ class SocialOrbitLayout @JvmOverloads constructor(
             innerOrbitPaint
         )
 
+        // FIXME: 28-Jan-21 is this variable really needed? Use outerOrbitRadius if possible
         val orbitRadius = centerX.coerceAtMost(centerY)
         for (i in 0 until childCount) {
             val child = getChildAt(i)
             val childRadius = min(child.width, child.height) / 2f
 
-            if(i == 0) {
+            if (i == 0) {
                 child.x = centerX - childRadius
                 child.y = centerY - childRadius
-            }
-            else if (i < 5) {
+            } else if (i < 5) {
                 val angle = when (i) {
                     1 -> 70.0
                     2 -> 160.0
@@ -106,13 +119,17 @@ class SocialOrbitLayout @JvmOverloads constructor(
                 }
 
                 child.x =
-                    (centerX - childRadius) - (orbitRadius - orbit?.outerOrbitPadding!!) * sin(
+                    (centerX - childRadius) - (orbitRadius - orbit?.outerOrbitPadding!!.dpToPx(
+                        resources.displayMetrics
+                    )) * sin(
                         Math.toRadians(
                             angle + outerOrbitCurrentAngle
                         )
                     ).toFloat()
                 child.y =
-                    (centerY - childRadius) + (orbitRadius - orbit?.outerOrbitPadding!!) * cos(
+                    (centerY - childRadius) + (orbitRadius - orbit?.outerOrbitPadding!!.dpToPx(
+                        resources.displayMetrics
+                    )) * cos(
                         Math.toRadians(
                             angle + outerOrbitCurrentAngle
                         )
