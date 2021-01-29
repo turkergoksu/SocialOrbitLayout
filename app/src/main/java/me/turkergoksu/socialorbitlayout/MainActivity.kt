@@ -6,8 +6,8 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import androidx.databinding.DataBindingUtil
 import me.turkergoksu.socialorbitlayout.databinding.ActivityMainBinding
-import me.turkergoksu.socialorbitlayout.model.FloatingObject
-import me.turkergoksu.socialorbitlayout.model.Orbit
+import me.turkergoksu.lib.model.FloatingObject
+import me.turkergoksu.lib.model.Orbit
 
 class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {

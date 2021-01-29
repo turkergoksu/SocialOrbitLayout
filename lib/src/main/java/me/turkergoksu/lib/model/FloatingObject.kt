@@ -1,4 +1,4 @@
-package me.turkergoksu.socialorbitlayout.model
+package me.turkergoksu.lib.model
 
 import android.graphics.Bitmap
 import android.graphics.Canvas

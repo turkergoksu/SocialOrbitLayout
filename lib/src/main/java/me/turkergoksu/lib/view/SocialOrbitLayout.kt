@@ -1,4 +1,4 @@
-package me.turkergoksu.socialorbitlayout.view
+package me.turkergoksu.lib.view
 
 import android.animation.ValueAnimator
 import android.content.Context
@@ -8,8 +8,11 @@ import android.util.AttributeSet
 import android.view.ViewGroup
 import android.view.animation.LinearInterpolator
 import android.widget.FrameLayout
+import me.turkergoksu.lib.BitmapUtil
+import me.turkergoksu.lib.toDp
+import me.turkergoksu.lib.toPx
 import me.turkergoksu.socialorbitlayout.*
-import me.turkergoksu.socialorbitlayout.model.Orbit
+import me.turkergoksu.lib.model.Orbit
 import kotlin.math.abs
 import kotlin.math.cos
 import kotlin.math.min

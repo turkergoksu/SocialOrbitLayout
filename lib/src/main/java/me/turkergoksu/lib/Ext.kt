@@ -1,4 +1,4 @@
-package me.turkergoksu.socialorbitlayout
+package me.turkergoksu.lib
 
 import android.util.DisplayMetrics
 import android.util.TypedValue

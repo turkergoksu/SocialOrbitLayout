@@ -1,4 +1,4 @@
-package me.turkergoksu.socialorbitlayout.view
+package me.turkergoksu.lib.view
 
 import android.content.Context
 import android.graphics.*
@@ -6,8 +6,8 @@ import android.util.AttributeSet
 import android.view.View
 import android.view.ViewOutlineProvider
 import androidx.core.graphics.toRect
-import me.turkergoksu.socialorbitlayout.toPx
-import me.turkergoksu.socialorbitlayout.model.FloatingObject
+import me.turkergoksu.lib.toPx
+import me.turkergoksu.lib.model.FloatingObject
 import kotlin.math.min
 
 /**
