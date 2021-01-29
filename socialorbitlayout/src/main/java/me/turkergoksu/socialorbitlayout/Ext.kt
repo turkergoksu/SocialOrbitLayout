@@ -10,10 +10,17 @@ import android.util.TypedValue
 /**
  * Converting any dp value to px value with given display metrics.
  */
-fun Float.dpToPx(displayMetrics: DisplayMetrics): Float {
+fun Float.toPx(displayMetrics: DisplayMetrics): Float {
     return TypedValue.applyDimension(
         TypedValue.COMPLEX_UNIT_DIP,
         this,
         displayMetrics
     )
+}
+
+/**
+ * Converting any px value to dp value with given display metrics.
+ */
+fun Float.toDp(displayMetrics: DisplayMetrics): Float {
+    return this / displayMetrics.density
 }

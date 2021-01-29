@@ -21,8 +21,8 @@ object BitmapUtil {
     ): Bitmap =
         Bitmap.createScaledBitmap(
             bitmap,
-            (size - borderWidth).dpToPx(displayMetrics).toInt(),
-            (size - borderWidth).dpToPx(displayMetrics).toInt(),
+            (size - borderWidth).toPx(displayMetrics).toInt(),
+            (size - borderWidth).toPx(displayMetrics).toInt(),
             false
         )
 

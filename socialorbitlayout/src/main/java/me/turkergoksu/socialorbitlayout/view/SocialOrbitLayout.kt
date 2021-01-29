@@ -2,14 +2,15 @@ package me.turkergoksu.socialorbitlayout.view
 
 import android.animation.ValueAnimator
 import android.content.Context
+import android.content.res.TypedArray
 import android.graphics.*
 import android.util.AttributeSet
 import android.view.ViewGroup
 import android.view.animation.LinearInterpolator
 import android.widget.FrameLayout
-import me.turkergoksu.socialorbitlayout.BitmapUtil
-import me.turkergoksu.socialorbitlayout.dpToPx
+import me.turkergoksu.socialorbitlayout.*
 import me.turkergoksu.socialorbitlayout.model.Orbit
+import kotlin.math.abs
 import kotlin.math.cos
 import kotlin.math.min
 import kotlin.math.sin
@@ -23,6 +24,7 @@ class SocialOrbitLayout @JvmOverloads constructor(
 
     // Member Variables
     private var orbit: Orbit? = null
+    private var typedArray: TypedArray? = null
 
     // Drawing
     private var outerOrbitPaint = Paint()
@@ -32,9 +34,20 @@ class SocialOrbitLayout @JvmOverloads constructor(
     private var outerOrbitCurrentAngle = 0f
     private var innerOrbitCurrentAngle = 0f
 
+    init {
+        typedArray = context.theme.obtainStyledAttributes(
+            attrs,
+            R.styleable.SocialOrbitLayout,
+            0,
+            0
+        )
+    }
+
     private fun init() {
         // TODO: 26-Jan-21  https://stackoverflow.com/a/13056400/6771753
         setWillNotDraw(false)
+
+        initAttributes()
 
         setOrbitPaint()
 
@@ -43,16 +56,73 @@ class SocialOrbitLayout @JvmOverloads constructor(
         startAnimation()
     }
 
+    private fun initAttributes() {
+        typedArray?.apply {
+            // Outer orbit color
+            orbit?.outerOrbitColor =
+                getColor(
+                    R.styleable.SocialOrbitLayout_outerOrbitColor,
+                    Color.LTGRAY
+                )
+
+            // FIXME: 29-Jan-21 Alttaki toPx, toDp gibi fonksiyonlar gereksiz islem yapıyor.
+            /**
+             * Fakat gelistiriciden Orbit nesnesini olustururken px degerleri girmesini istemek de
+             * cok sacma olur. Daha temiz bir cözüm bulabilirsen onu implemente et. Bulamazsan
+             * bu sekilde kalsın.
+              */
+            // Outer orbit width
+            orbit?.outerOrbitWidth = getDimension(
+                R.styleable.SocialOrbitLayout_outerOrbitWidth,
+                2f.toPx(resources.displayMetrics)
+            ).toDp(resources.displayMetrics)
+
+            // Outer orbit animation duration
+            orbit?.outerOrbitAnimationDuration =
+                abs(getInt(R.styleable.SocialOrbitLayout_outerOrbitAnimDuration, 60000))
+
+            // Outer orbit padding
+            orbit?.outerOrbitPadding = getDimension(
+                R.styleable.SocialOrbitLayout_outerOrbitPadding,
+                40f.toPx(resources.displayMetrics)
+            ).toDp(resources.displayMetrics)
+
+            // Inner orbit radius
+            orbit?.innerRadius = getDimension(
+                R.styleable.SocialOrbitLayout_innerOrbitRadius,
+                90f.toPx(resources.displayMetrics)
+            ).toDp(resources.displayMetrics)
+
+            // Inner orbit color
+            orbit?.innerOrbitColor = getColor(
+                R.styleable.SocialOrbitLayout_innerOrbitColor,
+                Color.parseColor("#f8f4fe")
+            )
+
+            // Inner orbit width
+            orbit?.innerOrbitWidth = getDimension(
+                R.styleable.SocialOrbitLayout_innerOrbitWidth,
+                40f.toPx(resources.displayMetrics)
+            ).toDp(resources.displayMetrics)
+
+            // Inner orbit animation duration
+            orbit?.innerOrbitAnimationDuration =
+                abs(getInt(R.styleable.SocialOrbitLayout_innerOrbitAnimDuration, 30000))
+
+            recycle()
+        }
+    }
+
     private fun setOrbitPaint() {
         // Outer orbit paint
         outerOrbitPaint.style = Paint.Style.STROKE
         outerOrbitPaint.color = orbit?.outerOrbitColor!!
-        outerOrbitPaint.strokeWidth = orbit?.outerOrbitWidth!!.dpToPx(resources.displayMetrics)
+        outerOrbitPaint.strokeWidth = orbit?.outerOrbitWidth!!.toPx(resources.displayMetrics)
 
         // Inner orbit paint
         innerOrbitPaint.style = Paint.Style.STROKE
         innerOrbitPaint.color = orbit?.innerOrbitColor!!
-        innerOrbitPaint.strokeWidth = orbit?.innerOrbitWidth!!.dpToPx(resources.displayMetrics)
+        innerOrbitPaint.strokeWidth = orbit?.innerOrbitWidth!!.toPx(resources.displayMetrics)
     }
 
     private fun addChildFloatingObjectViews() {
@@ -88,11 +158,11 @@ class SocialOrbitLayout @JvmOverloads constructor(
         canvas?.drawCircle(
             centerX,
             centerY,
-            outerOrbitRadius - orbit?.outerOrbitPadding!!.dpToPx(resources.displayMetrics),
+            outerOrbitRadius - orbit?.outerOrbitPadding!!.toPx(resources.displayMetrics),
             outerOrbitPaint
         )
 
-        val innerRadius = orbit!!.innerRadius.dpToPx(resources.displayMetrics)
+        val innerRadius = orbit!!.innerRadius.toPx(resources.displayMetrics)
         canvas?.drawCircle(
             centerX,
             centerY,
@@ -119,7 +189,7 @@ class SocialOrbitLayout @JvmOverloads constructor(
                 }
 
                 child.x =
-                    (centerX - childRadius) - (orbitRadius - orbit?.outerOrbitPadding!!.dpToPx(
+                    (centerX - childRadius) - (orbitRadius - orbit?.outerOrbitPadding!!.toPx(
                         resources.displayMetrics
                     )) * sin(
                         Math.toRadians(
@@ -127,7 +197,7 @@ class SocialOrbitLayout @JvmOverloads constructor(
                         )
                     ).toFloat()
                 child.y =
-                    (centerY - childRadius) + (orbitRadius - orbit?.outerOrbitPadding!!.dpToPx(
+                    (centerY - childRadius) + (orbitRadius - orbit?.outerOrbitPadding!!.toPx(
                         resources.displayMetrics
                     )) * cos(
                         Math.toRadians(
@@ -143,7 +213,7 @@ class SocialOrbitLayout @JvmOverloads constructor(
                 }
 
                 child.x =
-                    (centerX - childRadius) - (innerRadius - orbit?.innerOrbitWidth!!.dpToPx(
+                    (centerX - childRadius) - (innerRadius - orbit?.innerOrbitWidth!!.toPx(
                         resources.displayMetrics
                     ) / 2) * sin(
                         Math.toRadians(
@@ -151,7 +221,7 @@ class SocialOrbitLayout @JvmOverloads constructor(
                         )
                     ).toFloat()
                 child.y =
-                    (centerY - childRadius) + (innerRadius - orbit?.innerOrbitWidth!!.dpToPx(
+                    (centerY - childRadius) + (innerRadius - orbit?.innerOrbitWidth!!.toPx(
                         resources.displayMetrics
                     ) / 2) * cos(
                         Math.toRadians(

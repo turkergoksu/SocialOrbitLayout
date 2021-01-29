@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="SocialOrbitLayout">
+        <attr name="outerOrbitColor" format="color"/>
+        <attr name="outerOrbitWidth" format="dimension"/>
+        <attr name="outerOrbitAnimDuration" format="integer"/>
+        <attr name="outerOrbitPadding" format="dimension"/>
+        <attr name="innerOrbitRadius" format="dimension"/>
+        <attr name="innerOrbitColor" format="color"/>
+        <attr name="innerOrbitWidth" format="dimension"/>
+        <attr name="innerOrbitAnimDuration" format="integer"/>
+    </declare-styleable>
+</resources>
