@@ -91,7 +91,7 @@ class SocialOrbitLayout @JvmOverloads constructor(
             ).toDp(resources.displayMetrics)
 
             // Inner orbit radius
-            orbit?.innerRadius = getDimension(
+            orbit?.innerOrbitRadius = getDimension(
                 R.styleable.SocialOrbitLayout_innerOrbitRadius,
                 90f.toPx(resources.displayMetrics)
             ).toDp(resources.displayMetrics)
@@ -165,7 +165,7 @@ class SocialOrbitLayout @JvmOverloads constructor(
             outerOrbitPaint
         )
 
-        val innerRadius = orbit!!.innerRadius.toPx(resources.displayMetrics)
+        val innerRadius = orbit!!.innerOrbitRadius.toPx(resources.displayMetrics)
         canvas?.drawCircle(
             centerX,
             centerY,
