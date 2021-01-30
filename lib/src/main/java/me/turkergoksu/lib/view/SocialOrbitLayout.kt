@@ -9,6 +9,7 @@ import android.view.ViewGroup
 import android.view.animation.LinearInterpolator
 import android.widget.FrameLayout
 import me.turkergoksu.lib.BitmapUtil
+import me.turkergoksu.lib.model.FloatingObject
 import me.turkergoksu.lib.toDp
 import me.turkergoksu.lib.toPx
 import me.turkergoksu.socialorbitlayout.*
@@ -22,7 +23,7 @@ import kotlin.math.sin
  * Created by turkergoksu on 26-Jan-21.
  */
 class SocialOrbitLayout @JvmOverloads constructor(
-    context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
+        context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
 ) : FrameLayout(context, attrs, defStyleAttr) {
 
     // Member Variables
@@ -39,10 +40,10 @@ class SocialOrbitLayout @JvmOverloads constructor(
 
     init {
         typedArray = context.theme.obtainStyledAttributes(
-            attrs,
-            R.styleable.SocialOrbitLayout,
-            0,
-            0
+                attrs,
+                R.styleable.SocialOrbitLayout,
+                0,
+                0
         )
     }
 
@@ -63,54 +64,54 @@ class SocialOrbitLayout @JvmOverloads constructor(
         typedArray?.apply {
             // Outer orbit color
             orbit?.outerOrbitColor =
-                getColor(
-                    R.styleable.SocialOrbitLayout_outerOrbitColor,
-                    Color.LTGRAY
-                )
+                    getColor(
+                            R.styleable.SocialOrbitLayout_outerOrbitColor,
+                            Color.LTGRAY
+                    )
 
             // FIXME: 29-Jan-21 Alttaki toPx, toDp gibi fonksiyonlar gereksiz islem yapıyor.
             /**
              * Fakat gelistiriciden Orbit nesnesini olustururken px degerleri girmesini istemek de
              * cok sacma olur. Daha temiz bir cözüm bulabilirsen onu implemente et. Bulamazsan
              * bu sekilde kalsın.
-              */
+             */
             // Outer orbit width
             orbit?.outerOrbitWidth = getDimension(
-                R.styleable.SocialOrbitLayout_outerOrbitWidth,
-                2f.toPx(resources.displayMetrics)
+                    R.styleable.SocialOrbitLayout_outerOrbitWidth,
+                    2f.toPx(resources.displayMetrics)
             ).toDp(resources.displayMetrics)
 
             // Outer orbit animation duration
             orbit?.outerOrbitAnimationDuration =
-                abs(getInt(R.styleable.SocialOrbitLayout_outerOrbitAnimDuration, 60000))
+                    abs(getInt(R.styleable.SocialOrbitLayout_outerOrbitAnimDuration, 60000))
 
             // Outer orbit padding
             orbit?.outerOrbitPadding = getDimension(
-                R.styleable.SocialOrbitLayout_outerOrbitPadding,
-                40f.toPx(resources.displayMetrics)
+                    R.styleable.SocialOrbitLayout_outerOrbitPadding,
+                    40f.toPx(resources.displayMetrics)
             ).toDp(resources.displayMetrics)
 
             // Inner orbit radius
             orbit?.innerOrbitRadius = getDimension(
-                R.styleable.SocialOrbitLayout_innerOrbitRadius,
-                90f.toPx(resources.displayMetrics)
+                    R.styleable.SocialOrbitLayout_innerOrbitRadius,
+                    90f.toPx(resources.displayMetrics)
             ).toDp(resources.displayMetrics)
 
             // Inner orbit color
             orbit?.innerOrbitColor = getColor(
-                R.styleable.SocialOrbitLayout_innerOrbitColor,
-                Color.parseColor("#f8f4fe")
+                    R.styleable.SocialOrbitLayout_innerOrbitColor,
+                    Color.parseColor("#f8f4fe")
             )
 
             // Inner orbit width
             orbit?.innerOrbitWidth = getDimension(
-                R.styleable.SocialOrbitLayout_innerOrbitWidth,
-                40f.toPx(resources.displayMetrics)
+                    R.styleable.SocialOrbitLayout_innerOrbitWidth,
+                    40f.toPx(resources.displayMetrics)
             ).toDp(resources.displayMetrics)
 
             // Inner orbit animation duration
             orbit?.innerOrbitAnimationDuration =
-                abs(getInt(R.styleable.SocialOrbitLayout_innerOrbitAnimDuration, 30000))
+                    abs(getInt(R.styleable.SocialOrbitLayout_innerOrbitAnimDuration, 30000))
 
             recycle()
         }
@@ -129,25 +130,34 @@ class SocialOrbitLayout @JvmOverloads constructor(
     }
 
     private fun addChildFloatingObjectViews() {
+//        if (orbit?.centerFloatingObject != null) {
+//            val centerView = createFloatingObjectView(orbit?.centerFloatingObject!!)
+//            addView(centerView)
+//        }
+
         for (floatingObject in orbit?.floatingObjects!!) {
-            // FIXME: 28-Jan-21 bu for icini düzenle veya fonksiyonlastir
-            val view = FloatingObjectView(context)
-
-            floatingObject.bitmap = BitmapUtil.getCircularCroppedBitmap(
-                BitmapUtil.getScaledBitmap(
-                    floatingObject.bitmap,
-                    floatingObject.size,
-                    floatingObject.borderWidth,
-                    resources.displayMetrics
-                )
-            )
-
-            view.setFloatingObject(floatingObject)
-            view.layoutParams =
-                LayoutParams(LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT)
-            view.elevation = floatingObject.elevation
-            addView(view)
+            val childView = createFloatingObjectView(floatingObject)
+            addView(childView)
         }
+    }
+
+    private fun createFloatingObjectView(floatingObject: FloatingObject): FloatingObjectView {
+        val view = FloatingObjectView(context)
+
+        floatingObject.bitmap = BitmapUtil.getCircularCroppedBitmap(
+                BitmapUtil.getScaledBitmap(
+                        floatingObject.bitmap,
+                        floatingObject.size,
+                        floatingObject.borderWidth,
+                        resources.displayMetrics
+                )
+        )
+        view.layoutParams =
+                LayoutParams(LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT)
+        view.elevation = floatingObject.elevation
+        view.setFloatingObject(floatingObject)
+
+        return view
     }
 
     override fun onDraw(canvas: Canvas?) {
@@ -156,25 +166,26 @@ class SocialOrbitLayout @JvmOverloads constructor(
         // If this code block doesn't work try in dispatchDraw
         val centerX = (measuredWidth / 2).toFloat()
         val centerY = (measuredHeight / 2).toFloat()
-        val outerOrbitRadius = centerX.coerceAtMost(centerY)
+        val halfOfWholeView = centerX.coerceAtMost(centerY)
 
+        val outerOrbitRadius = halfOfWholeView - orbit?.outerOrbitPadding!!.toPx(resources.displayMetrics)
         canvas?.drawCircle(
-            centerX,
-            centerY,
-            outerOrbitRadius - orbit?.outerOrbitPadding!!.toPx(resources.displayMetrics),
-            outerOrbitPaint
+                centerX,
+                centerY,
+                outerOrbitRadius,
+                outerOrbitPaint
         )
 
-        val innerRadius = orbit!!.innerOrbitRadius.toPx(resources.displayMetrics)
+        val innerOrbitRadius = orbit!!.innerOrbitRadius.toPx(resources.displayMetrics)
         canvas?.drawCircle(
-            centerX,
-            centerY,
-            innerRadius,
-            innerOrbitPaint
+                centerX,
+                centerY,
+                innerOrbitRadius,
+                innerOrbitPaint
         )
 
-        // FIXME: 28-Jan-21 is this variable really needed? Use outerOrbitRadius if possible
-        val orbitRadius = centerX.coerceAtMost(centerY)
+        var outerAngle = 70.0
+        var innerAngle = 20.0
         for (i in 0 until childCount) {
             val child = getChildAt(i)
             val childRadius = min(child.width, child.height) / 2f
@@ -182,55 +193,44 @@ class SocialOrbitLayout @JvmOverloads constructor(
             if (i == 0) {
                 child.x = centerX - childRadius
                 child.y = centerY - childRadius
-            } else if (i < 5) {
-                val angle = when (i) {
-                    1 -> 70.0
-                    2 -> 160.0
-                    3 -> 250.0
-                    4 -> 340.0
-                    else -> 0.0
-                }
+            } else if (i < 4) {
+                innerAngle += 120.0
 
                 child.x =
-                    (centerX - childRadius) - (orbitRadius - orbit?.outerOrbitPadding!!.toPx(
-                        resources.displayMetrics
-                    )) * sin(
-                        Math.toRadians(
-                            angle + outerOrbitCurrentAngle
-                        )
-                    ).toFloat()
+                        (centerX - childRadius) - (innerOrbitRadius - orbit?.innerOrbitWidth!!.toPx(
+                                resources.displayMetrics
+                        ) / 2) * sin(
+                                Math.toRadians(
+                                        innerAngle + innerOrbitCurrentAngle
+                                )
+                        ).toFloat()
                 child.y =
-                    (centerY - childRadius) + (orbitRadius - orbit?.outerOrbitPadding!!.toPx(
-                        resources.displayMetrics
-                    )) * cos(
-                        Math.toRadians(
-                            angle + outerOrbitCurrentAngle
-                        )
-                    ).toFloat()
+                        (centerY - childRadius) + (innerOrbitRadius - orbit?.innerOrbitWidth!!.toPx(
+                                resources.displayMetrics
+                        ) / 2) * cos(
+                                Math.toRadians(
+                                        innerAngle + innerOrbitCurrentAngle
+                                )
+                        ).toFloat()
             } else {
-                val angle = when (i) {
-                    5 -> 20.0
-                    6 -> 140.0
-                    7 -> 260.0
-                    else -> 0.0
-                }
+                outerAngle += 90.0
 
                 child.x =
-                    (centerX - childRadius) - (innerRadius - orbit?.innerOrbitWidth!!.toPx(
-                        resources.displayMetrics
-                    ) / 2) * sin(
-                        Math.toRadians(
-                            angle + innerOrbitCurrentAngle
-                        )
-                    ).toFloat()
+                        (centerX - childRadius) - (halfOfWholeView - orbit?.outerOrbitPadding!!.toPx(
+                                resources.displayMetrics
+                        )) * sin(
+                                Math.toRadians(
+                                        outerAngle + outerOrbitCurrentAngle
+                                )
+                        ).toFloat()
                 child.y =
-                    (centerY - childRadius) + (innerRadius - orbit?.innerOrbitWidth!!.toPx(
-                        resources.displayMetrics
-                    ) / 2) * cos(
-                        Math.toRadians(
-                            angle + innerOrbitCurrentAngle
-                        )
-                    ).toFloat()
+                        (centerY - childRadius) + (halfOfWholeView - orbit?.outerOrbitPadding!!.toPx(
+                                resources.displayMetrics
+                        )) * cos(
+                                Math.toRadians(
+                                        outerAngle + outerOrbitCurrentAngle
+                                )
+                        ).toFloat()
             }
         }
     }
