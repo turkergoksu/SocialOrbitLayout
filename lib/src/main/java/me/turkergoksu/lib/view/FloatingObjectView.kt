@@ -8,6 +8,7 @@ import android.view.ViewOutlineProvider
 import androidx.core.graphics.toRect
 import me.turkergoksu.lib.toPx
 import me.turkergoksu.lib.model.FloatingObject
+import me.turkergoksu.lib.model.FloatingObjectLocation
 import kotlin.math.min
 
 /**
@@ -118,6 +119,9 @@ class FloatingObjectView @JvmOverloads constructor(
         init()
         invalidate()
     }
+
+    fun getFloatingObjectLocation(): FloatingObjectLocation =
+            floatingObject?.location!!
 
     // TODO: 26-Jan-21 https://stackoverflow.com/a/27497988/6771753
     private class FloatingObjectOutline(val rect: Rect, val radius: Float) : ViewOutlineProvider() {

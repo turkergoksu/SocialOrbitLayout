@@ -13,4 +13,11 @@ data class FloatingObject(
     val borderWidth: Float = 2f,
     val size: Float = 40f,
     val elevation: Float = 10f,
+    val location: FloatingObjectLocation = FloatingObjectLocation.OUTER
 )
+
+enum class FloatingObjectLocation {
+    OUTER,
+    INNER,
+    CENTER
+}

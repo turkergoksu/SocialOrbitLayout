@@ -5,9 +5,13 @@
         <attr name="outerOrbitWidth" format="dimension"/>
         <attr name="outerOrbitAnimDuration" format="integer"/>
         <attr name="outerOrbitPadding" format="dimension"/>
+        <attr name="outerOrbitStartAngle" format="integer"/>
+        <attr name="outerOrbitAngleDistance" format="integer"/>
         <attr name="innerOrbitRadius" format="dimension"/>
         <attr name="innerOrbitColor" format="color"/>
         <attr name="innerOrbitWidth" format="dimension"/>
         <attr name="innerOrbitAnimDuration" format="integer"/>
+        <attr name="innerOrbitStartAngle" format="integer"/>
+        <attr name="innerOrbitAngleDistance" format="integer"/>
     </declare-styleable>
 </resources>

@@ -10,6 +10,7 @@ import android.view.animation.LinearInterpolator
 import android.widget.FrameLayout
 import me.turkergoksu.lib.BitmapUtil
 import me.turkergoksu.lib.model.FloatingObject
+import me.turkergoksu.lib.model.FloatingObjectLocation
 import me.turkergoksu.lib.toDp
 import me.turkergoksu.lib.toPx
 import me.turkergoksu.socialorbitlayout.*
@@ -53,7 +54,7 @@ class SocialOrbitLayout @JvmOverloads constructor(
 
         initAttributes()
 
-        setOrbitPaint()
+        initOrbitPaintAttributes()
 
         addChildFloatingObjectViews()
 
@@ -91,6 +92,18 @@ class SocialOrbitLayout @JvmOverloads constructor(
                     40f.toPx(resources.displayMetrics)
             ).toDp(resources.displayMetrics)
 
+            // Outer orbit start angle
+            orbit?.outerOrbitStartAngle = getInt(
+                    R.styleable.SocialOrbitLayout_outerOrbitStartAngle,
+                    70
+            ).toDouble()
+
+            // Outer orbit angle distance
+            orbit?.outerOrbitAngleDistance = abs(getInt(
+                    R.styleable.SocialOrbitLayout_outerOrbitAngleDistance,
+                    90
+            )).toDouble()
+
             // Inner orbit radius
             orbit?.innerOrbitRadius = getDimension(
                     R.styleable.SocialOrbitLayout_innerOrbitRadius,
@@ -113,11 +126,23 @@ class SocialOrbitLayout @JvmOverloads constructor(
             orbit?.innerOrbitAnimationDuration =
                     abs(getInt(R.styleable.SocialOrbitLayout_innerOrbitAnimDuration, 30000))
 
+            // Inner orbit start angle
+            orbit?.innerOrbitStartAngle = getInt(
+                    R.styleable.SocialOrbitLayout_innerOrbitStartAngle,
+                    20
+            ).toDouble()
+
+            // Inner orbit angle distance
+            orbit?.innerOrbitAngleDistance = abs(getInteger(
+                    R.styleable.SocialOrbitLayout_innerOrbitAngleDistance,
+                    120
+            )).toDouble()
+
             recycle()
         }
     }
 
-    private fun setOrbitPaint() {
+    private fun initOrbitPaintAttributes() {
         // Outer orbit paint
         outerOrbitPaint.style = Paint.Style.STROKE
         outerOrbitPaint.color = orbit?.outerOrbitColor!!
@@ -130,11 +155,6 @@ class SocialOrbitLayout @JvmOverloads constructor(
     }
 
     private fun addChildFloatingObjectViews() {
-//        if (orbit?.centerFloatingObject != null) {
-//            val centerView = createFloatingObjectView(orbit?.centerFloatingObject!!)
-//            addView(centerView)
-//        }
-
         for (floatingObject in orbit?.floatingObjects!!) {
             val childView = createFloatingObjectView(floatingObject)
             addView(childView)
@@ -184,53 +204,57 @@ class SocialOrbitLayout @JvmOverloads constructor(
                 innerOrbitPaint
         )
 
-        var outerAngle = 70.0
-        var innerAngle = 20.0
+        var outerAngle = orbit?.outerOrbitStartAngle!!
+        var innerAngle = orbit?.innerOrbitStartAngle!!
         for (i in 0 until childCount) {
-            val child = getChildAt(i)
+            val child = getChildAt(i) as FloatingObjectView
             val childRadius = min(child.width, child.height) / 2f
 
-            if (i == 0) {
-                child.x = centerX - childRadius
-                child.y = centerY - childRadius
-            } else if (i < 4) {
-                innerAngle += 120.0
+            when (child.getFloatingObjectLocation()) {
+                FloatingObjectLocation.OUTER -> {
+                    outerAngle += orbit?.outerOrbitAngleDistance!!
 
-                child.x =
-                        (centerX - childRadius) - (innerOrbitRadius - orbit?.innerOrbitWidth!!.toPx(
-                                resources.displayMetrics
-                        ) / 2) * sin(
-                                Math.toRadians(
-                                        innerAngle + innerOrbitCurrentAngle
-                                )
-                        ).toFloat()
-                child.y =
-                        (centerY - childRadius) + (innerOrbitRadius - orbit?.innerOrbitWidth!!.toPx(
-                                resources.displayMetrics
-                        ) / 2) * cos(
-                                Math.toRadians(
-                                        innerAngle + innerOrbitCurrentAngle
-                                )
-                        ).toFloat()
-            } else {
-                outerAngle += 90.0
+                    child.x =
+                            (centerX - childRadius) - (halfOfWholeView - orbit?.outerOrbitPadding!!.toPx(
+                                    resources.displayMetrics
+                            )) * sin(
+                                    Math.toRadians(
+                                            outerAngle + outerOrbitCurrentAngle
+                                    )
+                            ).toFloat()
+                    child.y =
+                            (centerY - childRadius) + (halfOfWholeView - orbit?.outerOrbitPadding!!.toPx(
+                                    resources.displayMetrics
+                            )) * cos(
+                                    Math.toRadians(
+                                            outerAngle + outerOrbitCurrentAngle
+                                    )
+                            ).toFloat()
+                }
+                FloatingObjectLocation.INNER -> {
+                    innerAngle += orbit?.innerOrbitAngleDistance!!
 
-                child.x =
-                        (centerX - childRadius) - (halfOfWholeView - orbit?.outerOrbitPadding!!.toPx(
-                                resources.displayMetrics
-                        )) * sin(
-                                Math.toRadians(
-                                        outerAngle + outerOrbitCurrentAngle
-                                )
-                        ).toFloat()
-                child.y =
-                        (centerY - childRadius) + (halfOfWholeView - orbit?.outerOrbitPadding!!.toPx(
-                                resources.displayMetrics
-                        )) * cos(
-                                Math.toRadians(
-                                        outerAngle + outerOrbitCurrentAngle
-                                )
-                        ).toFloat()
+                    child.x =
+                            (centerX - childRadius) - (innerOrbitRadius - orbit?.innerOrbitWidth!!.toPx(
+                                    resources.displayMetrics
+                            ) / 2) * sin(
+                                    Math.toRadians(
+                                            innerAngle + innerOrbitCurrentAngle
+                                    )
+                            ).toFloat()
+                    child.y =
+                            (centerY - childRadius) + (innerOrbitRadius - orbit?.innerOrbitWidth!!.toPx(
+                                    resources.displayMetrics
+                            ) / 2) * cos(
+                                    Math.toRadians(
+                                            innerAngle + innerOrbitCurrentAngle
+                                    )
+                            ).toFloat()
+                }
+                FloatingObjectLocation.CENTER -> {
+                    child.x = centerX - childRadius
+                    child.y = centerY - childRadius
+                }
             }
         }
     }

@@ -63,7 +63,11 @@ socialOrbitLayout.setOrbit(orbit)
 |`outerOrbitWidth`|`dimension`|`2dp`|Width of the outer orbit.|
 |`outerOrbitAnimDuration`|`integer`|`60000`|The time that any floating object will make 1 full turn in outer orbit with given milliseconds.|
 |`outerOrbitPadding`|`dimension`|`40dp`|The padding between outer orbit and whole view.|
+|`outerOrbitStartAngle`|`integer`|`70`|The start angle of first floating object on outer orbit.|
+|`outerOrbitAngleDistance`|`integer`|`90`|The angle distance between floating objects on outer orbit.|
 |`innerOrbitRadius`|`dimension`|`90dp`|Radius of the inner orbit.|
 |`innerOrbitColor`|`color`|`#F8F4FE`|Color of the inner orbit.|
 |`innerOrbitWidth`|`dimension`|`40dp`|Width of the inner orbit.|
 |`innerOrbitAnimDuration`|`integer`|`30000`|The time that any floating object will make 1 full turn in inner orbit with given milliseconds.|
+|`innerOrbitStartAngle`|`integer`|`20`|The start angle of first floating object on inner orbit.|
+|`innerOrbitAngleDistance`|`integer`|`120`|The angle distance between floating objects on inner orbit.|
