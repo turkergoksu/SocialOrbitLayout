@@ -64,79 +64,89 @@ class SocialOrbitLayout @JvmOverloads constructor(
     private fun initAttributes() {
         typedArray?.apply {
             // Outer orbit color
-            orbit?.outerOrbitColor =
+            val outerOrbitColor =
                     getColor(
                             R.styleable.SocialOrbitLayout_outerOrbitColor,
-                            Color.LTGRAY
+                            orbit?.outerOrbitColor!!
                     )
 
-            // FIXME: 29-Jan-21 Alttaki toPx, toDp gibi fonksiyonlar gereksiz islem yapıyor.
-            /**
-             * Fakat gelistiriciden Orbit nesnesini olustururken px degerleri girmesini istemek de
-             * cok sacma olur. Daha temiz bir cözüm bulabilirsen onu implemente et. Bulamazsan
-             * bu sekilde kalsın.
-             */
             // Outer orbit width
-            orbit?.outerOrbitWidth = getDimension(
+            val outerOrbitWidth = getDimension(
                     R.styleable.SocialOrbitLayout_outerOrbitWidth,
-                    2f.toPx(resources.displayMetrics)
+                    orbit?.outerOrbitWidth!!.toPx(resources.displayMetrics)
             ).toDp(resources.displayMetrics)
 
             // Outer orbit animation duration
-            orbit?.outerOrbitAnimationDuration =
-                    abs(getInt(R.styleable.SocialOrbitLayout_outerOrbitAnimDuration, 60000))
+            val outerOrbitAnimationDuration =
+                    abs(getInt(R.styleable.SocialOrbitLayout_outerOrbitAnimDuration, orbit?.outerOrbitAnimationDuration!!))
 
             // Outer orbit padding
-            orbit?.outerOrbitPadding = getDimension(
+            val outerOrbitPadding = getDimension(
                     R.styleable.SocialOrbitLayout_outerOrbitPadding,
-                    40f.toPx(resources.displayMetrics)
+                    orbit?.outerOrbitPadding!!.toPx(resources.displayMetrics)
             ).toDp(resources.displayMetrics)
 
             // Outer orbit start angle
-            orbit?.outerOrbitStartAngle = getInt(
+            val outerOrbitStartAngle = getInt(
                     R.styleable.SocialOrbitLayout_outerOrbitStartAngle,
-                    70
+                    orbit?.outerOrbitStartAngle!!.toInt()
             ).toDouble()
 
             // Outer orbit angle distance
-            orbit?.outerOrbitAngleDistance = abs(getInt(
+            val outerOrbitAngleDistance = abs(getInt(
                     R.styleable.SocialOrbitLayout_outerOrbitAngleDistance,
-                    90
+                    orbit?.outerOrbitAngleDistance!!.toInt()
             )).toDouble()
 
             // Inner orbit radius
-            orbit?.innerOrbitRadius = getDimension(
+            val innerOrbitRadius = getDimension(
                     R.styleable.SocialOrbitLayout_innerOrbitRadius,
-                    90f.toPx(resources.displayMetrics)
+                    orbit?.innerOrbitRadius!!.toPx(resources.displayMetrics)
             ).toDp(resources.displayMetrics)
 
             // Inner orbit color
-            orbit?.innerOrbitColor = getColor(
+            val innerOrbitColor = getColor(
                     R.styleable.SocialOrbitLayout_innerOrbitColor,
-                    Color.parseColor("#f8f4fe")
+                    orbit?.innerOrbitColor!!
             )
 
             // Inner orbit width
-            orbit?.innerOrbitWidth = getDimension(
+            val innerOrbitWidth = getDimension(
                     R.styleable.SocialOrbitLayout_innerOrbitWidth,
-                    40f.toPx(resources.displayMetrics)
+                    orbit?.innerOrbitWidth!!.toPx(resources.displayMetrics)
             ).toDp(resources.displayMetrics)
 
             // Inner orbit animation duration
-            orbit?.innerOrbitAnimationDuration =
-                    abs(getInt(R.styleable.SocialOrbitLayout_innerOrbitAnimDuration, 30000))
+            val innerOrbitAnimationDuration =
+                    abs(getInt(R.styleable.SocialOrbitLayout_innerOrbitAnimDuration, orbit?.innerOrbitAnimationDuration!!))
 
             // Inner orbit start angle
-            orbit?.innerOrbitStartAngle = getInt(
+            val innerOrbitStartAngle = getInt(
                     R.styleable.SocialOrbitLayout_innerOrbitStartAngle,
-                    20
+                    orbit?.innerOrbitStartAngle!!.toInt()
             ).toDouble()
 
             // Inner orbit angle distance
-            orbit?.innerOrbitAngleDistance = abs(getInteger(
+            val innerOrbitAngleDistance = abs(getInteger(
                     R.styleable.SocialOrbitLayout_innerOrbitAngleDistance,
-                    120
+                    orbit?.innerOrbitAngleDistance!!.toInt()
             )).toDouble()
+
+            orbit = Orbit.Builder()
+                    .setFloatingObjectList(orbit?.floatingObjectList ?: mutableListOf())
+                    .setOuterOrbitColor(outerOrbitColor)
+                    .setOuterOrbitWidth(outerOrbitWidth)
+                    .setOuterOrbitAnimDuration(outerOrbitAnimationDuration)
+                    .setOuterOrbitPadding(outerOrbitPadding)
+                    .setOuterOrbitStartAngle(outerOrbitStartAngle)
+                    .setOuterOrbitAngleDistance(outerOrbitAngleDistance)
+                    .setInnerOrbitRadius(innerOrbitRadius)
+                    .setInnerOrbitColor(innerOrbitColor)
+                    .setInnerOrbitWidth(innerOrbitWidth)
+                    .setInnerOrbitAnimDuration(innerOrbitAnimationDuration)
+                    .setInnerOrbitStartAngle(innerOrbitStartAngle)
+                    .setInnerOrbitAngleDistance(innerOrbitAngleDistance)
+                    .build()
 
             recycle()
         }
@@ -155,7 +165,7 @@ class SocialOrbitLayout @JvmOverloads constructor(
     }
 
     private fun addChildFloatingObjectViews() {
-        for (floatingObject in orbit?.floatingObjects!!) {
+        for (floatingObject in orbit?.floatingObjectList!!) {
             val childView = createFloatingObjectView(floatingObject)
             addView(childView)
         }
@@ -196,7 +206,7 @@ class SocialOrbitLayout @JvmOverloads constructor(
                 outerOrbitPaint
         )
 
-        val innerOrbitRadius = orbit!!.innerOrbitRadius.toPx(resources.displayMetrics)
+        val innerOrbitRadius = orbit!!.innerOrbitRadius!!.toPx(resources.displayMetrics)
         canvas?.drawCircle(
                 centerX,
                 centerY,
