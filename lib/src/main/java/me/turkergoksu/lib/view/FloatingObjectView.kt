@@ -7,7 +7,7 @@ import android.view.View
 import android.view.ViewOutlineProvider
 import androidx.core.graphics.toRect
 import me.turkergoksu.lib.toPx
-import me.turkergoksu.lib.model.FloatingObject
+import me.turkergoksu.lib.model.FloatingImage
 import me.turkergoksu.lib.model.FloatingObjectLocation
 import kotlin.math.min
 
@@ -19,7 +19,7 @@ class FloatingObjectView @JvmOverloads constructor(
 ) : View(context, attrs, defStyleAttr) {
 
     // Member variables
-    private var floatingObject: FloatingObject? = null
+    private var floatingImage: FloatingImage? = null
 
     // Drawing
     private var rectF: RectF? = null
@@ -31,19 +31,19 @@ class FloatingObjectView @JvmOverloads constructor(
 
     private fun init() {
         // Set radius
-        floatingObject?.let {
+        floatingImage?.let {
             radius = (it.bitmap.width / 2f + it.borderWidth.toPx(resources.displayMetrics))
         }
     }
 
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
         // TODO: 26-Jan-21 https://stackoverflow.com/a/12267248/6771753
-        if (floatingObject != null) {
+        if (floatingImage != null) {
             val desiredWidth =
-                ((floatingObject!!.size / 2 + floatingObject!!.borderWidth) * 2).toPx(resources.displayMetrics)
+                ((floatingImage!!.size / 2 + floatingImage!!.borderWidth) * 2).toPx(resources.displayMetrics)
                     .toInt()
             val desiredHeight =
-                ((floatingObject!!.size / 2 + floatingObject!!.borderWidth) * 2).toPx(resources.displayMetrics)
+                ((floatingImage!!.size / 2 + floatingImage!!.borderWidth) * 2).toPx(resources.displayMetrics)
                     .toInt()
 
             val widthMode = MeasureSpec.getMode(widthMeasureSpec)
@@ -87,19 +87,19 @@ class FloatingObjectView @JvmOverloads constructor(
     override fun onDraw(canvas: Canvas?) {
         super.onDraw(canvas)
 
-        floatingObject?.let { drawFloatingObject(canvas, it) }
+        floatingImage?.let { drawFloatingObject(canvas, it) }
     }
 
     private fun drawFloatingObject(
-        canvas: Canvas?,
-        floatingObject: FloatingObject
+            canvas: Canvas?,
+            floatingImage: FloatingImage
     ) {
         val backgroundPaint = Paint()
-        backgroundPaint.color = floatingObject.backgroundColor
+        backgroundPaint.color = floatingImage.backgroundColor
         radius?.let {
             canvas?.drawCircle(
-                (floatingObject.borderWidth.toPx(resources.displayMetrics) + floatingObject.bitmap.width / 2),
-                (floatingObject.borderWidth.toPx(resources.displayMetrics) + floatingObject.bitmap.width / 2),
+                (floatingImage.borderWidth.toPx(resources.displayMetrics) + floatingImage.bitmap.width / 2),
+                (floatingImage.borderWidth.toPx(resources.displayMetrics) + floatingImage.bitmap.width / 2),
                 it,
                 backgroundPaint
             )
@@ -107,21 +107,21 @@ class FloatingObjectView @JvmOverloads constructor(
 
         // Draw image
         canvas?.drawBitmap(
-            floatingObject.bitmap,
-            (radius!! - floatingObject.bitmap.width / 2),
-            (radius!! - floatingObject.bitmap.width / 2),
+            floatingImage.bitmap,
+            (radius!! - floatingImage.bitmap.width / 2),
+            (radius!! - floatingImage.bitmap.width / 2),
             Paint()
         )
     }
 
-    fun setFloatingObject(floatingObject: FloatingObject) {
-        this.floatingObject = floatingObject
+    fun setFloatingObject(floatingImage: FloatingImage) {
+        this.floatingImage = floatingImage
         init()
         invalidate()
     }
 
     fun getFloatingObjectLocation(): FloatingObjectLocation =
-            floatingObject?.location!!
+            floatingImage?.location!!
 
     // TODO: 26-Jan-21 https://stackoverflow.com/a/27497988/6771753
     private class FloatingObjectOutline(val rect: Rect, val radius: Float) : ViewOutlineProvider() {

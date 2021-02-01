@@ -9,7 +9,7 @@ import android.view.ViewGroup
 import android.view.animation.LinearInterpolator
 import android.widget.FrameLayout
 import me.turkergoksu.lib.BitmapUtil
-import me.turkergoksu.lib.model.FloatingObject
+import me.turkergoksu.lib.model.FloatingImage
 import me.turkergoksu.lib.model.FloatingObjectLocation
 import me.turkergoksu.lib.toDp
 import me.turkergoksu.lib.toPx
@@ -63,6 +63,8 @@ class SocialOrbitLayout @JvmOverloads constructor(
 
     private fun initAttributes() {
         typedArray?.apply {
+            // TODO: 01-Feb-21 Add data binding support for floatingObjectList
+
             // Outer orbit color
             val outerOrbitColor =
                     getColor(
@@ -133,7 +135,7 @@ class SocialOrbitLayout @JvmOverloads constructor(
             )).toDouble()
 
             orbit = Orbit.Builder()
-                    .setFloatingObjectList(orbit?.floatingObjectList ?: mutableListOf())
+                    .setFloatingObjectList(orbit?.floatingImageList ?: mutableListOf())
                     .setOuterOrbitColor(outerOrbitColor)
                     .setOuterOrbitWidth(outerOrbitWidth)
                     .setOuterOrbitAnimDuration(outerOrbitAnimationDuration)
@@ -165,27 +167,27 @@ class SocialOrbitLayout @JvmOverloads constructor(
     }
 
     private fun addChildFloatingObjectViews() {
-        for (floatingObject in orbit?.floatingObjectList!!) {
+        for (floatingObject in orbit?.floatingImageList!!) {
             val childView = createFloatingObjectView(floatingObject)
             addView(childView)
         }
     }
 
-    private fun createFloatingObjectView(floatingObject: FloatingObject): FloatingObjectView {
+    private fun createFloatingObjectView(floatingImage: FloatingImage): FloatingObjectView {
         val view = FloatingObjectView(context)
 
-        floatingObject.bitmap = BitmapUtil.getCircularCroppedBitmap(
+        floatingImage.bitmap = BitmapUtil.getCircularCroppedBitmap(
                 BitmapUtil.getScaledBitmap(
-                        floatingObject.bitmap,
-                        floatingObject.size,
-                        floatingObject.borderWidth,
+                        floatingImage.bitmap,
+                        floatingImage.size,
+                        floatingImage.borderWidth,
                         resources.displayMetrics
                 )
         )
         view.layoutParams =
                 LayoutParams(LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT)
-        view.elevation = floatingObject.elevation
-        view.setFloatingObject(floatingObject)
+        view.elevation = floatingImage.elevation
+        view.setFloatingObject(floatingImage)
 
         return view
     }

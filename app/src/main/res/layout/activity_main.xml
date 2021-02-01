@@ -16,9 +16,21 @@
             android:id="@+id/socialOrbitLayout"
             android:layout_width="match_parent"
             android:layout_height="400dp"
+            app:innerOrbitAngleDistance="120"
+            app:innerOrbitAnimDuration="30000"
+            app:innerOrbitColor="#e0ecff"
+            app:innerOrbitRadius="90dp"
+            app:innerOrbitStartAngle="20"
+            app:innerOrbitWidth="40dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent"
+            app:outerOrbitAngleDistance="90"
+            app:outerOrbitAnimDuration="60000"
+            app:outerOrbitColor="#d3d3d3"
+            app:outerOrbitPadding="40dp"
+            app:outerOrbitStartAngle="70"
+            app:outerOrbitWidth="2dp" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

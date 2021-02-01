@@ -6,7 +6,7 @@ import android.graphics.Color
  * Created by turkergoksu on 23-Jan-21.
  */
 class Orbit private constructor(
-        val floatingObjectList: MutableList<FloatingObject>?,
+        val floatingImageList: MutableList<FloatingImage>?,
         val outerOrbitColor: Int?,
         val outerOrbitWidth: Float?,
         val outerOrbitAnimationDuration: Int?,
@@ -22,7 +22,7 @@ class Orbit private constructor(
 ) {
 
     data class Builder(
-            var floatingObjectList: MutableList<FloatingObject>? = null,
+            var floatingImageList: MutableList<FloatingImage>? = null,
             var outerOrbitColor: Int = Color.LTGRAY,
             var outerOrbitWidth: Float = 2f,
             var outerOrbitAnimationDuration: Int = 60000,
@@ -37,8 +37,8 @@ class Orbit private constructor(
             var innerOrbitAngleDistance: Double = 120.0
     ) {
 
-        fun setFloatingObjectList(list: MutableList<FloatingObject>) =
-                apply { floatingObjectList = list }
+        fun setFloatingObjectList(list: MutableList<FloatingImage>) =
+                apply { floatingImageList = list }
 
         fun setOuterOrbitColor(color: Int) = apply { outerOrbitColor = color }
         fun setOuterOrbitWidth(width: Float) = apply { outerOrbitWidth = width }
@@ -53,7 +53,7 @@ class Orbit private constructor(
         fun setInnerOrbitStartAngle(angle: Double) = apply { innerOrbitStartAngle = angle }
         fun setInnerOrbitAngleDistance(distance: Double) = apply { innerOrbitAngleDistance = distance }
         fun build() = Orbit(
-                floatingObjectList,
+                floatingImageList,
                 outerOrbitColor,
                 outerOrbitWidth,
                 outerOrbitAnimationDuration,
