@@ -124,6 +124,8 @@ var orbit = Orbit.Builder()
                     // .
                 )
         )
+        .build()
+socialOrbitLayout.setOrbit(orbit)
 
 ```
 
