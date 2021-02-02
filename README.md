@@ -1,4 +1,4 @@
-[![]()]()
+[![](https://jitpack.io/v/turkergoksu/SocialOrbitLayout.svg)](https://jitpack.io/#turkergoksu/SocialOrbitLayout)
 ![](https://img.shields.io/badge/minSdkVersion-21-brightgreen.svg)
 
 # SocialOrbitLayout
