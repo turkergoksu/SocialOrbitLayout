@@ -23,7 +23,7 @@ class MainActivity : AppCompatActivity() {
                         mutableListOf(
                                 FloatingImage.Builder()
                                         .setBitmap(BitmapFactory.decodeResource(resources, R.drawable.dummy1))
-                                        .setBackgroundColor(Color.parseColor("#2e7fff"))
+                                        .setBackgroundColor(Color.parseColor("#7919f7"))
                                         .setSize(70f)
                                         .setLocation(FloatingObjectLocation.CENTER)
                                         .build(),
@@ -102,7 +102,7 @@ class MainActivity : AppCompatActivity() {
                                         .build(),
                         )
                 ).build()
-        
+
         binding.socialOrbitLayout.setOrbit(orbit1)
 //        binding.socialOrbitLayout.setOrbit(orbit2)
     }

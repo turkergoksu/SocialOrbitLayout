@@ -6,7 +6,7 @@ Adjustable custom view that can be used for loading screens or welcome pages ins
 
 ![intro](screenshots/intro.gif?raw=true)
 
-All the example images are generated from thispersondoesnotexist.com
+All the example images are generated from [thispersondoesnotexist.com]()
 
 ## 🛠️Setup
 #### 1. Add the JitPack repository to your build file.
@@ -28,8 +28,6 @@ dependencies {
 
 
 ## 🕹️Usage
-
-
 ```xml
 <me.turkergoksu.lib.view.SocialOrbitLayout
             android:id="@+id/socialOrbitLayout"
