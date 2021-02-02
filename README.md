@@ -6,7 +6,7 @@ Adjustable custom view that can be used for loading screens or welcome pages ins
 
 ![intro](screenshots/intro.gif?raw=true)
 
-All the example images are generated from [thispersondoesnotexist.com](thispersondoesnotexist.com).
+All the example images are generated from thispersondoesnotexist.com
 
 ## 🛠️Setup
 #### 1. Add the JitPack repository to your build file.
@@ -53,6 +53,8 @@ dependencies {
 ```
 
 Currently, you can programmatically add `FloatingImage` to `Orbit` with given `Bitmap`.
+
+⚠️ You may set `Orbit` attributes programmatically but it will be overwritten by the values in the layout. 
 ```kotlin
 var orbit = Orbit.Builder()
         .setFloatingObjectList(
@@ -60,22 +62,21 @@ var orbit = Orbit.Builder()
                     // .
                     // .
                     // .
-                    FloatingImage(
-                        backgroundColor = Color.parseColor("#2e7fff"),
-                        bitmap = BitmapFactory.decodeResource(resources, R.drawable.dummy1),
-                        size = 70f,
-                        location = FloatingObjectLocation.CENTER
-                    ),
-                    FloatingImage(
-                        backgroundColor = Color.WHITE,
-                        bitmap = BitmapFactory.decodeResource(resources, R.drawable.dummy2),
-                        size = 50f,
-                        location = FloatingObjectLocation.INNER
-                    ),
-                    FloatingImage(
-                        bitmap = BitmapFactory.decodeResource(resources, R.drawable.dummy3),
-                        location = FloatingObjectLocation.OUTER
-                    )
+                    FloatingImage.Builder()
+                        .setBitmap(BitmapFactory.decodeResource(resources, R.drawable.dummy1))
+                        .setBackgroundColor(Color.parseColor("#2e7fff"))
+                        .setSize(70f)
+                        .setLocation(FloatingObjectLocation.CENTER)
+                        .build(),
+                    FloatingImage.Builder()
+                        .setBitmap(BitmapFactory.decodeResource(resources, R.drawable.dummy2))
+                        .setSize(50f)
+                        .setLocation(FloatingObjectLocation.INNER)
+                        .build(),
+                    FloatingImage.Builder()
+                        .setBitmap(BitmapFactory.decodeResource(resources, R.drawable.dummy3))
+                        .setLocation(FloatingObjectLocation.OUTER)
+                        .build(),
                     // .
                     // .
                     // .
@@ -92,7 +93,41 @@ var orbit = Orbit.Builder()
 socialOrbitLayout.setOrbit(orbit)
 ```
 
-⚠️ You may set `Orbit` attributes programmatically but it will be overwritten by values in the layout.
+
+If you don't want to create a `FloatingImageBuilder` for every `FloatingImage` object, you may create a single builder and change it's attributes. This implementation actually better for objects that shares same attributes(Or the majority). Check the following example.
+```kotlin
+val floatingImageBuilder = FloatingImage.Builder()
+                .setBackgroundColor(Color.RED)
+                .setBorderWidth(3f)
+                .setSize(50f)
+                
+var orbit = Orbit.Builder()
+        .setFloatingObjectList(
+                mutableListOf(
+                    // .
+                    // .
+                    // .
+                    floatingImageBuilder.copy() // copy() is crucial here!
+                        .setBitmap(BitmapFactory.decodeResource(resources, R.drawable.dummy1))
+                        .setBackgroundColor(Color.WHITE)
+                        .setSize(70f)
+                        .setLocation(FloatingObjectLocation.CENTER)
+                        .build(),
+                    floatingImageBuilder.copy()
+                        .setBitmap(BitmapFactory.decodeResource(resources, R.drawable.dummy2))
+                        .setLocation(FloatingObjectLocation.INNER)
+                        .build(),
+                    floatingImageBuilder.copy()
+                        .setBitmap(BitmapFactory.decodeResource(resources, R.drawable.dummy3))
+                        .setBorderWidth(2f)
+                        .build(),
+                    // .
+                    // .
+                    // .
+                )
+        )
+
+```
 
 ## 📝Attributes
 ### SocialOrbitLayout
@@ -112,12 +147,12 @@ socialOrbitLayout.setOrbit(orbit)
 |`innerOrbitAngleDistance`|`integer`|`120`|The angle distance between floating objects on inner orbit.|
 
 ### FloatingImage
-⚠️ Currently these attributes are for `FloatingImage`, not for `FloatingObjectView`. That means you cannot use these attributes inside layout files until me or someone else implements it.
+⚠️ To avoid any future confusion after seeing `SocialOrbitLayout`, the following attributes are for the `FloatingImage` object and not for the layout file. Because currently there isn't any `FloatingObjectView` attribute implementation.
 
 | Name | Format | Default | Description |
 | ---- | ------ | ------- | ----------- |
-|`backgroundColor`|`Int`|`Color.WHITE`|Background color of floating image. In order to observe the color `borderWidth` needs to be bigger than `0f`. |
 |`bitmap`|`Bitmap`|`null`|The image that `FloatingObjectView` shows.|
+|`backgroundColor`|`Int`|`Color.WHITE`|Background color of floating image. In order to observe the color `borderWidth` needs to be bigger than `0f`. |
 |`borderWidth`|`Float`|`2f`|Border width of `FloatingObjectView`.|
 |`size`|`Float`|`40f`|Size of the `FloatingObjectView`(not `bitmap`).|
 |`elevation`|`Float`|`10f`|Elevation value of `FloatingObjectView`.|

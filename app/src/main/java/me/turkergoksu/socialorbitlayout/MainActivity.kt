@@ -17,53 +17,93 @@ class MainActivity : AppCompatActivity() {
         val binding =
                 DataBindingUtil.setContentView<ActivityMainBinding>(this, R.layout.activity_main)
 
-        // Example orbit
-        val orbit = Orbit.Builder()
+        // Example - 1
+        val orbit1 = Orbit.Builder()
                 .setFloatingObjectList(
                         mutableListOf(
-                                FloatingImage(
-                                        Color.parseColor("#2e7fff"),
-                                        BitmapFactory.decodeResource(resources, R.drawable.dummy1),
-                                        size = 70f,
-                                        location = FloatingObjectLocation.CENTER
-                                ),
-                                FloatingImage(
-                                        Color.WHITE,
-                                        BitmapFactory.decodeResource(resources, R.drawable.dummy6),
-                                        location = FloatingObjectLocation.INNER
-                                ),
-                                FloatingImage(
-                                        Color.WHITE,
-                                        BitmapFactory.decodeResource(resources, R.drawable.dummy7),
-                                        location = FloatingObjectLocation.INNER
-                                ),
-                                FloatingImage(
-                                        Color.WHITE,
-                                        BitmapFactory.decodeResource(resources, R.drawable.dummy5),
-                                        location = FloatingObjectLocation.INNER
-                                ),
-                                FloatingImage(
-                                        Color.WHITE,
-                                        BitmapFactory.decodeResource(resources, R.drawable.dummy2),
-                                        size = 50f
-                                ),
-                                FloatingImage(
-                                        Color.WHITE,
-                                        BitmapFactory.decodeResource(resources, R.drawable.dummy3)
-                                ),
-                                FloatingImage(
-                                        Color.WHITE,
-                                        BitmapFactory.decodeResource(resources, R.drawable.dummy4),
-                                        size = 50f
-                                ),
-                                FloatingImage(
-                                        Color.WHITE,
-                                        BitmapFactory.decodeResource(resources, R.drawable.dummy8),
-                                        size = 60f
-                                )
+                                FloatingImage.Builder()
+                                        .setBitmap(BitmapFactory.decodeResource(resources, R.drawable.dummy1))
+                                        .setBackgroundColor(Color.parseColor("#2e7fff"))
+                                        .setSize(70f)
+                                        .setLocation(FloatingObjectLocation.CENTER)
+                                        .build(),
+                                FloatingImage.Builder()
+                                        .setBitmap(BitmapFactory.decodeResource(resources, R.drawable.dummy6))
+                                        .setLocation(FloatingObjectLocation.INNER)
+                                        .build(),
+                                FloatingImage.Builder()
+                                        .setBitmap(BitmapFactory.decodeResource(resources, R.drawable.dummy7))
+                                        .setLocation(FloatingObjectLocation.INNER)
+                                        .build(),
+                                FloatingImage.Builder()
+                                        .setBitmap(BitmapFactory.decodeResource(resources, R.drawable.dummy5))
+                                        .setLocation(FloatingObjectLocation.INNER)
+                                        .build(),
+                                FloatingImage.Builder()
+                                        .setBitmap(BitmapFactory.decodeResource(resources, R.drawable.dummy2))
+                                        .setSize(50f)
+                                        .setLocation(FloatingObjectLocation.OUTER)
+                                        .build(),
+                                FloatingImage.Builder()
+                                        .setBitmap(BitmapFactory.decodeResource(resources, R.drawable.dummy3))
+                                        .build(),
+                                FloatingImage.Builder()
+                                        .setBitmap(BitmapFactory.decodeResource(resources, R.drawable.dummy4))
+                                        .setSize(50f)
+                                        .build(),
+                                FloatingImage.Builder()
+                                        .setBitmap(BitmapFactory.decodeResource(resources, R.drawable.dummy8))
+                                        .setSize(60f)
+                                        .build(),
                         )
                 ).build()
 
-        binding.socialOrbitLayout.setOrbit(orbit)
+        // Example - 2
+        val floatingImageBuilder = FloatingImage.Builder()
+                .setBackgroundColor(Color.RED)
+                .setBorderWidth(3f)
+                .setSize(50f)
+
+        val orbit2 = Orbit.Builder()
+                .setFloatingObjectList(
+                        mutableListOf(
+                                floatingImageBuilder.copy()
+                                        .setBitmap(BitmapFactory.decodeResource(resources, R.drawable.dummy1))
+                                        .setBackgroundColor(Color.parseColor("#2e7fff"))
+                                        .setSize(70f)
+                                        .setLocation(FloatingObjectLocation.CENTER)
+                                        .build(),
+                                floatingImageBuilder.copy()
+                                        .setBitmap(BitmapFactory.decodeResource(resources, R.drawable.dummy6))
+                                        .setLocation(FloatingObjectLocation.INNER)
+                                        .build(),
+                                floatingImageBuilder.copy()
+                                        .setBitmap(BitmapFactory.decodeResource(resources, R.drawable.dummy7))
+                                        .setLocation(FloatingObjectLocation.INNER)
+                                        .build(),
+                                floatingImageBuilder.copy()
+                                        .setBitmap(BitmapFactory.decodeResource(resources, R.drawable.dummy5))
+                                        .setLocation(FloatingObjectLocation.INNER)
+                                        .build(),
+                                floatingImageBuilder.copy()
+                                        .setBitmap(BitmapFactory.decodeResource(resources, R.drawable.dummy2))
+                                        .setSize(50f)
+                                        .build(),
+                                floatingImageBuilder.copy()
+                                        .setBitmap(BitmapFactory.decodeResource(resources, R.drawable.dummy3))
+                                        .build(),
+                                floatingImageBuilder.copy()
+                                        .setBitmap(BitmapFactory.decodeResource(resources, R.drawable.dummy4))
+                                        .setSize(50f)
+                                        .build(),
+                                floatingImageBuilder.copy()
+                                        .setBitmap(BitmapFactory.decodeResource(resources, R.drawable.dummy8))
+                                        .setSize(60f)
+                                        .build(),
+                        )
+                ).build()
+        
+        binding.socialOrbitLayout.setOrbit(orbit1)
+//        binding.socialOrbitLayout.setOrbit(orbit2)
     }
 }
